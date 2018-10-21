@@ -210,6 +210,7 @@ public class VentanaPrincipal extends JFrame {
 			formTurno.setNombreProfesional(idNombreProfesional.getNombre());
 			formTurno.setFecha(fecha);
 			formTurno.setHora(hora);
+			formTurno.setLocationRelativeTo(null);
 			formTurno.setVisible(true);
 			if (!formTurno.getCancelado())
 			{
@@ -263,24 +264,5 @@ public class VentanaPrincipal extends JFrame {
 	private void modificarEvento(int id)
 	{
 		System.out.println(id);
-	}
-	private static void addPopup(Component component, final JPopupMenu popup) {
-		component.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			private void showMenu(MouseEvent e) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
-			}
-		});
 	}
 }
