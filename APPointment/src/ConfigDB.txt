@@ -1,0 +1,5 @@
+jdbc=jdbc:sqlserver://
+servidor=localhost:1433;databaseName=APPOINTMENT
+usuario=tposip1
+password=tposip1
+conexiones=3
