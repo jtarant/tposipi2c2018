@@ -176,7 +176,7 @@ public class AdmPersistenciaTurnos {
 		{
 			cnx = PoolConexiones.getInstancia().getConnection();
 			PreparedStatement cmdSql;
-			cmdSql = cnx.prepareStatement("UPDATE TURNO SET Estado=? WHERE IdTurno=?");
+			cmdSql = cnx.prepareStatement("UPDATE TURNO SET Estado=? WHERE Id=?");
 			cmdSql.setInt(1, EstadoTurno.ANULADO.getValor());
 			cmdSql.setInt(2, idTurno);
 			cmdSql.execute();

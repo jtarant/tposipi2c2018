@@ -42,7 +42,8 @@ public class Paciente {
 	}
 
 	public void setApellido(String apellido) {
-		this.apellido = apellido.trim().toUpperCase();
+		if (apellido != null)
+			this.apellido = apellido.trim().toUpperCase();
 	}
 
 	public String getNombre() {
@@ -50,7 +51,8 @@ public class Paciente {
 	}
 
 	public void setNombre(String nombre) {
-		this.nombre = nombre.trim().toUpperCase();
+		if (nombre != null)
+			this.nombre = nombre.trim().toUpperCase();
 	}
 
 	public int getDNI() {
@@ -82,7 +84,8 @@ public class Paciente {
 	}
 
 	public void setEmail(String email) {
-		this.email = email.toLowerCase();
+		if (email != null)
+			this.email = email.toLowerCase();
 	}
 
 	public Boolean getActivo() {

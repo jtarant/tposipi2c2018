@@ -31,18 +31,18 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPopupMenu;
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class VentanaPrincipal extends JFrame {
 
 	private WeekCalendar calendario;
 	private JComboBox<IdNombreView> cboProfesionales;
 	private IdNombreView idNombreProfesional;
+	private JPopupMenu popupMenu;
+	private CalendarEvent eventoSeleccionado;
 
 	/**
 	 * Launch the application.
@@ -72,7 +72,7 @@ public class VentanaPrincipal extends JFrame {
 		ArrayList<CalendarEvent> events = new ArrayList<>();
 		calendario = new WeekCalendar(events);
 		calendario.addCalendarEventClickListener(e -> { 
-			this.modificarEvento(e.getCalendarEvent().getID());
+			this.accionesEvento(e.getCalendarEvent());
 			});
 		calendario.addCalendarEmptyClickListener(e -> {			
 			
@@ -119,6 +119,20 @@ public class VentanaPrincipal extends JFrame {
         nextWeekBtn.addActionListener(e -> this.verSemanaProxima());
 
         getContentPane().add(calendario, BorderLayout.CENTER);
+        
+        popupMenu = new JPopupMenu();
+        
+        JMenuItem mntmAdmitir = new JMenuItem("Admitir");
+        popupMenu.add(mntmAdmitir);
+        
+        JMenuItem mntmCancelar = new JMenuItem("Cancelar");
+        mntmCancelar.addActionListener(new ActionListener() {
+        	@Override
+			public void actionPerformed(ActionEvent arg0) {
+        		cancelarTurno();
+        	}
+        });
+        popupMenu.add(mntmCancelar);
         setSize(1000, 900);
         
         JMenuBar menuBar = new JMenuBar();
@@ -261,8 +275,29 @@ public class VentanaPrincipal extends JFrame {
 		return new CalendarEvent(ldInicio, ltInicio, ltFin, titulo, new Color(194,205,248), idTurno);
 	}
 	
-	private void modificarEvento(int id)
+	private void accionesEvento(CalendarEvent e)
 	{
-		System.out.println(id);
+		eventoSeleccionado = e;
+		Point pos = calendario.getMousePosition();
+		popupMenu.show(calendario, (int)pos.getX(), (int)pos.getY());
 	}
+	
+	private void cancelarTurno()
+	{
+		try 
+		{
+			int opcion = JOptionPane.showConfirmDialog(null, "Seguro que queres cancelar el turno?", "Anular turno", JOptionPane.YES_NO_OPTION);
+			if (opcion == JOptionPane.YES_OPTION)
+			{
+				AdminTurnos.getInstancia().anular(eventoSeleccionado.getID());
+				calendario.removeEvent(eventoSeleccionado);
+				eventoSeleccionado = null;
+			}
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error cancelar el turno:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}		
+	}	
 }
