@@ -40,4 +40,9 @@ public class AdminPacientes {
 			return pac;
 		}
 	}
+	
+	public void limpiarCache()
+	{
+		pacientes.clear();
+	}
 }

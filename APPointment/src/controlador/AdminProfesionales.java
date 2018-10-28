@@ -40,4 +40,9 @@ public class AdminProfesionales {
 			return pro;
 		}
 	}
+	
+	public void limpiarCache()
+	{
+		profesionales.clear();
+	}
 }

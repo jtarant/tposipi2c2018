@@ -142,6 +142,15 @@ public class VentanaPrincipal extends JFrame {
         menuBar.add(mnAgenda);
         
         JMenuItem mntmReglas = new JMenuItem("Reglas");
+        mntmReglas.addActionListener(new ActionListener() {
+        	@Override
+			public void actionPerformed(ActionEvent arg0) {
+        		ABMReglas formReglas = new ABMReglas();
+        		formReglas.setLocationRelativeTo(null);
+        		formReglas.setVisible(true);
+        		formReglas.dispose();
+        	}
+        });
         mnAgenda.add(mntmReglas);
         
         JMenu mnFacturacion = new JMenu("Facturacion");

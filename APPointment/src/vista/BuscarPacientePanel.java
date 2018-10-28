@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.AdminPacientes;
@@ -123,5 +124,13 @@ public class BuscarPacientePanel extends JPanel {
 	public void setFocus()
 	{
 		txtBuscar.requestFocusInWindow();
+	}
+	public void limpiar()
+	{
+		tblResultados.removeAll();
+	}
+	public void addSelectionListener(ListSelectionListener lsl)
+	{
+		tblResultados.getSelectionModel().addListSelectionListener(lsl);
 	}
 }

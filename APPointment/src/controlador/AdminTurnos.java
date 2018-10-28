@@ -102,4 +102,8 @@ public class AdminTurnos {
 			AdmPersistenciaTurnos.getInstancia().anular(id);
 	}
 	
+	public void limpiarCache()
+	{
+		turnos.clear();
+	}
 }
