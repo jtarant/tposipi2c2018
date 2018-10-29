@@ -1,7 +1,11 @@
 package modelo;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import controlador.ReglaView;
 import persistencia.AdmPersistenciaReglas;
@@ -123,5 +127,29 @@ public class Regla
 	{
 		setActiva(false);
 		actualizar();
+	}
+	
+	@SuppressWarnings("deprecation")
+	public List<Date> calcularFechas(Date mes)
+	{
+		List<Date> fechas = new ArrayList<Date>();
+		LocalDate periodoDesde = LocalDate.of(mes.getYear(), mes.getMonth(), 1);
+		LocalDate periodoHasta = periodoDesde.plusMonths(1).minusDays(1);
+		LocalDate fecha = getFechaInicio().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		Date nuevaFecha;
+		
+		while (fecha.getDayOfWeek() != getRepiteDia()) fecha.plusDays(1);
+		while (fecha.compareTo(periodoHasta)<=0)
+		{
+			if (fecha.compareTo(periodoDesde)>=0)
+			{
+				nuevaFecha = Date.from(fecha.atStartOfDay(ZoneId.systemDefault()).toInstant());
+				nuevaFecha.setHours(getHora().getHours());
+				nuevaFecha.setMinutes(getHora().getMinutes());
+				fechas.add(nuevaFecha);
+			}
+			fecha = fecha.plusWeeks(getRepiteCada());
+		}
+		return fechas;
 	}
 }
