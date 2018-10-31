@@ -86,4 +86,10 @@ public class Turno
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	public void cancelar() throws Exception
+	{
+		if (getEstado() != EstadoTurno.ABIERTO) throw new ExceptionDeNegocio("No se puede anular un turno que no esta abierto.");
+		AdmPersistenciaTurnos.getInstancia().anular(getId());
+	}
 }

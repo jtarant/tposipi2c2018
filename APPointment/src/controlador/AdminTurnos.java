@@ -99,7 +99,7 @@ public class AdminTurnos {
 		if (turno == null)
 			throw new ExceptionDeNegocio("No se pudo encontrar el turno.");
 		else
-			AdmPersistenciaTurnos.getInstancia().anular(id);
+			turno.cancelar();
 	}
 	
 	public void limpiarCache()
