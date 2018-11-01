@@ -208,6 +208,7 @@ public class ABMReglas extends JDialog {
 			if (!formRegla.getCancelado())
 			{
 				AdminReglas.getInstancia().insertar(idNombreProfesional.getId(), pnlBuscarPaciente.getIDSeleccionado(), formRegla.getFechaInicio(), formRegla.getFechaFin(), formRegla.getRepiteDias(), formRegla.getHora(), formRegla.getRepiteCada());
+				llenarGrilla();
 			}
 			formRegla.dispose();
 		}
