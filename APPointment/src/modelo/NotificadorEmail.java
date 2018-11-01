@@ -5,6 +5,7 @@ import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -70,8 +71,6 @@ public class NotificadorEmail
 		String destinatarios = email.getDestinatarios();
 		
 		System.out.println("Enviando mail a: " + destinatarios);
-		System.out.println(texto);
-
 		if (session != null)
 		{
 			Message message = new MimeMessage(session);
@@ -79,7 +78,7 @@ public class NotificadorEmail
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatarios));
 			message.setSubject(email.getAsunto());
 			message.setContent(texto, "text/html; charset=utf-8");
-//			Transport.send(message);
+			Transport.send(message);
 			System.out.println("enviado correctamente.");
 		}
 	}

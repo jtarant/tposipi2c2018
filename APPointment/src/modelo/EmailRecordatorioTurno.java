@@ -33,7 +33,7 @@ public class EmailRecordatorioTurno extends Email
 	public EmailRecordatorioTurno(String destinatario, String apellidoPaciente, String nombrePaciente, Date fechaHoraTurno, String apellidoProfesional, String nombreProfesional, int idTurno) throws Exception 
 	{
 		inicializar();
-		setAsunto("Recordatorio de turno: " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(this.fechaHoraTurno));
+		setAsunto("Recordatorio de turno: "/* + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(this.fechaHoraTurno)*/);
 		setDestinatarios(destinatario);
 		this.apellidoPaciente = apellidoPaciente;
 		this.nombrePaciente = nombrePaciente;

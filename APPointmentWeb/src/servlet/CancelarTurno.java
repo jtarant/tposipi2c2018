@@ -1,6 +1,4 @@
 package servlet;
-import appointment.controlador;
-
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

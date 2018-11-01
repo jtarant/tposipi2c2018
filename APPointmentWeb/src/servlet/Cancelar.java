@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import controlador.AdminTurnos;
+
 /**
  * Servlet implementation class Cancelar
  */
@@ -19,14 +21,21 @@ public class Cancelar extends HttpServlet {
      */
     public Cancelar() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//response.getWriter().append("TURNO: " + request.getParameter("id") + " CANCELADO");
+		try 
+		{
+			AdminTurnos.getInstancia().anular(request.getParameter("id"));
+		} 
+		catch (Exception e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		request.getRequestDispatcher("/WEB-INF/Cancelacion.jsp").forward(request, response);
 	}
 
@@ -34,8 +43,6 @@ public class Cancelar extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
 }
