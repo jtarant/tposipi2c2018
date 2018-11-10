@@ -36,6 +36,7 @@ import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPopupMenu;
+import javax.swing.Timer;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -180,6 +181,10 @@ public class VentanaPrincipal extends JFrame {
         setVisible(true);
         
         this.cargarProfesionales();
+        
+        // Actualiza automaticamente cada 1 minuto para detectar las cancelaciones por web
+        Timer timer = new Timer(1000*60, e -> this.cargarAgenda());
+        timer.start();
  	}
 	
 	private void cargarProfesionales()
