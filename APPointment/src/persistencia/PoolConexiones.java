@@ -44,7 +44,7 @@ public class PoolConexiones
 		}
 		catch (Exception ex)
 		{
-			System.out.println("Mensaje Error: " + ex.getMessage());
+			System.out.println("No se pudo instanciar el driver JDBC: " + ex.getMessage());
 			return null;
 		}
 	}
@@ -65,7 +65,7 @@ public class PoolConexiones
 	     } 
 	     catch (Exception e) 
 	     {
-				System.out.println("Mensaje Error: " + e.getMessage());
+				System.out.println("No se pudo cargar la configuracion de la base de datos: " + e.getMessage());
 	     }
 	}
 	

@@ -91,6 +91,17 @@ public class AdminTurnos {
 		return new AgendaView(turnos, errores);
 	}
 	
+	public TurnoView obtenerTurno(String idOfuscado) throws Exception
+	{
+		int id = Seguridad.desOfuscarId(idOfuscado);
+		
+		Turno turno = this.buscar(id);
+		if (turno == null)
+			throw new ExceptionDeNegocio("No se pudo encontrar el turno.");
+		else
+			return turno.getView();
+	}
+	
 	public void recordarTurnos() throws Exception
 	{
 		final int DIAS_ANTES = 2;

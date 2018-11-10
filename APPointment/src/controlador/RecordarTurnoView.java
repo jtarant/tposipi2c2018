@@ -10,6 +10,7 @@ public class RecordarTurnoView {
 	private Date fechaHora;
 	private String apellidoProfesional;
 	private String nombreProfesional;
+	
 	public int getIdTurno() {
 		return idTurno;
 	}

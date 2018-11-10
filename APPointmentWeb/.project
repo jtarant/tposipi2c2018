@@ -3,6 +3,7 @@
 	<name>APPointmentWeb</name>
 	<comment></comment>
 	<projects>
+		<project>APPointment</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

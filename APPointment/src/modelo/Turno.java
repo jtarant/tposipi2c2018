@@ -3,6 +3,8 @@ package modelo;
 import java.util.Calendar;
 import java.util.Date;
 
+import controlador.IdNombreView;
+import controlador.TurnoView;
 import persistencia.AdmPersistenciaTurnos;
 
 public class Turno 
@@ -106,5 +108,16 @@ public class Turno
 	{
 		if (getEstado() != EstadoTurno.ABIERTO) throw new ExceptionDeNegocio("No se puede anular un turno que no esta abierto.");
 		AdmPersistenciaTurnos.getInstancia().anular(getId());
+	}
+	
+	public TurnoView getView()
+	{
+		TurnoView view = new TurnoView();
+		view.setId(getId());
+		view.setPaciente(getPaciente().getIdNombreView());
+		view.setProfesional(getProfesional().getIdNombreView());
+		view.setFechaHoraInicio(getFechaHoraInicio());
+		view.setFechaHoraFin(getFechaHoraFin());
+		return view;
 	}
 }

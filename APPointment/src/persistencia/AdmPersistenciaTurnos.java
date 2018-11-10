@@ -103,8 +103,8 @@ public class AdmPersistenciaTurnos {
 			{
 				int IdPaciente = result.getInt(1);
 				int IdProfesional = result.getInt(2);
-				Date fechaHoraInicio = result.getDate(3);
-				Date fechaHoraFin = result.getDate(4);
+				Date fechaHoraInicio = result.getTimestamp(3);
+				Date fechaHoraFin = result.getTimestamp(4);
 				int estado = result.getInt(5);
 				
 				Paciente pacienteGhost = new Paciente(IdPaciente,null,null,0,null,null,null,null);

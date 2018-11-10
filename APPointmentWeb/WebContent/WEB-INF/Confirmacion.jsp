@@ -38,16 +38,16 @@
            <strong>Fecha - Hora: </strong> <span style="color:#978474">${fechaHora}</span>
           </div>
           <div style="font-family:Arial;font-size:14px;width:310px;margin:0;padding:0;padding:3px 0">
-           <strong>Consultorio: </strong> <span style="color:#978474">${consultorio}</span>
+           <strong>Consultorio: </strong> <span style="color:#978474">Centro Medico Lamadrid</span>
           </div>
           <div style="font-family:Arial;font-size:14px;width:310px;margin:0;padding:0;padding:3px 0">
-           	 <strong>Dirección: </strong> <span style="color:#978474">${direccion}</span>
+           	 <strong>Dirección: </strong> <span style="color:#978474">Lamadrid 580, Tres Arroyos, Pcia. Buenos Aires</span>
           </div>
           <div style="font-family:Arial;font-size:14px;width:310px;margin:0;padding:0;padding:3px 0">
-           <strong>Teléfono: </strong> <span style="color:#978474">${telefono}</span>
+           <strong>Teléfono: </strong> <span style="color:#978474">(02983) 64-2301</span>
           </div>
           <div style="font-family:Arial;font-size:14px;width:310px;margin:0;padding:0;padding:3px 0">
-           <strong>Email: </strong> <span style="color:#978474"><a href="mailto:${mail}" target="_blank"> ${mail} </a></span>
+           <strong>Email: </strong> <span style="color:#978474"><a href="mailto:appointment.web@gmail.com" target="_blank"> appointment.web@gmail.com </a></span>
           </div>
          </div>
         </td>
@@ -62,7 +62,7 @@
        <tr>
         <td align="center">
          <div style="color:#ffffff;width:310px;margin:0;padding:0;padding:1px 0">
-          <a style="text-align:center;font-family:Arial;font-size:14px;padding:10px 5px;background-color:rgb(216,73,56);margin-left:10px;margin-right:10px;margin-bottom:10px;color:white;display:block" href="/APPointmentWeb/Cancelar?id=${id}" >Cancelar Turno</a>
+          <a style="text-align:center;font-family:Arial;font-size:14px;padding:10px 5px;background-color:rgb(216,73,56);margin-left:10px;margin-right:10px;margin-bottom:10px;color:white;display:block" href="/APPointmentWeb/Cancelar?id=${id}" >Confirmo la cancelacion</a>
          </div>
         </td>
        </tr>

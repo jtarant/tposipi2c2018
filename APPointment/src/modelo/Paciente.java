@@ -2,6 +2,8 @@ package modelo;
 
 import java.util.Date;
 
+import controlador.IdNombreView;
+
 public class Paciente {
 	private int id;
 	private String apellido;
@@ -95,5 +97,12 @@ public class Paciente {
 	public void setActivo(Boolean activo) {
 		this.activo = activo;
 	}
-		
+	
+	public IdNombreView getIdNombreView()
+	{
+		IdNombreView idNombre = new IdNombreView();
+		idNombre.setId(getId());
+		idNombre.setNombre(getApellido() + ", " + getNombre());
+		return idNombre;
+	}
 }

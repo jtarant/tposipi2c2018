@@ -1,6 +1,8 @@
 package modelo;
 
-public class Profesional {
+import controlador.IdNombreView;
+
+public class Profesional extends Usuario {
 	private int id;
 	private String especialidad;
 	private int duracionTurno;
@@ -55,4 +57,14 @@ public class Profesional {
 	public void setDuracionTurno(int duracionTurno) {
 		this.duracionTurno = duracionTurno;
 	}
+
+	@Override
+	public IdNombreView getIdNombreView() 
+	{
+		IdNombreView idNombre = super.getIdNombreView();
+		idNombre.setId(getId());
+		return idNombre;
+	}
+	
+	
 }

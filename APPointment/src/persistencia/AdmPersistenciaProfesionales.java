@@ -57,8 +57,11 @@ public class AdmPersistenciaProfesionales {
 		Profesional profesional = null;
 		try
 		{
+			StringBuilder sql = new StringBuilder("SELECT Profesional.ID,ID_Usuario,especialidad,duracionTurno,telefono,Profesional.activo,nombre,apellido ");
+			sql.append("FROM Profesional INNER JOIN Usuario ON Profesional.ID_Usuario=Usuario.ID WHERE Profesional.ID=?");
+			
 			cnx = PoolConexiones.getInstancia().getConnection();
-			PreparedStatement cmdSql = cnx.prepareStatement("SELECT ID,ID_Usuario,especialidad,duracionTurno,telefono,activo FROM Profesional WHERE ID=?");
+			PreparedStatement cmdSql = cnx.prepareStatement(sql.toString());
 			cmdSql.setInt(1, id);
 			ResultSet result = cmdSql.executeQuery();
 			if (result.next())
@@ -68,6 +71,8 @@ public class AdmPersistenciaProfesionales {
 				String telefono = result.getString(5);
 				Boolean activo = result.getBoolean(6);
 				profesional = new Profesional(id, especialidad, duracionTurno, telefono, activo);
+				profesional.setNombre(result.getString(7));
+				profesional.setApellido(result.getString(8));
 			}
 			PoolConexiones.getInstancia().realeaseConnection(cnx);
 			return profesional;
