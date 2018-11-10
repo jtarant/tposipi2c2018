@@ -114,6 +114,36 @@ public class AdmPersistenciaReglas
 		}
 	}
 	
+	public List<Integer> obtenerIdReglas(int IdProfesional, Date desde, Date hasta) throws Exception
+	{
+		Connection cnx = null;
+		List<Integer> lista = new ArrayList<Integer>();
+		try
+		{
+			cnx = PoolConexiones.getInstancia().getConnection();
+			PreparedStatement cmdSql = cnx.prepareStatement("SELECT ID FROM ReglaTurnoProgramado WHERE ID_Profesional=? AND fechaInicio<=? AND (FechaFin<=? OR FechaFin IS NULL) ORDER BY ID");
+			cmdSql.setInt(1, IdProfesional);
+			cmdSql.setTimestamp(2, new Timestamp(desde.getTime()));
+			cmdSql.setTimestamp(3, new Timestamp(hasta.getTime()));
+			ResultSet result = cmdSql.executeQuery();
+			while (result.next())
+			{
+				lista.add(result.getInt(1));
+			}
+			PoolConexiones.getInstancia().realeaseConnection(cnx);
+			return lista;
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw e;
+		}				
+		finally
+		{
+			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
+		}
+	}
+		
 	public Regla buscar(int id) throws Exception
 	{
 		Connection cnx = null;
@@ -138,7 +168,7 @@ public class AdmPersistenciaReglas
 				Paciente pacienteGhost = new Paciente(IdPaciente,null,null,0,null,null,null,null);
 				pacienteGhost.setId(IdPaciente);
 				
-				Profesional profesionalGhost = new Profesional(IdProfesional,null,null,null);
+				Profesional profesionalGhost = new Profesional(IdProfesional,null,0,null,null);
 				profesionalGhost.setId(IdProfesional);
 				
 				regla = new Regla(id, profesionalGhost, pacienteGhost, fechaInicio, fechaFin, dia, hora, repiteCada, activo); 

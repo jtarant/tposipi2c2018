@@ -22,6 +22,7 @@ import com.davidmoodie.SwingCalendar.WeekCalendar;
 
 import controlador.AdminProfesionales;
 import controlador.AdminTurnos;
+import controlador.AgendaView;
 import controlador.IdNombreView;
 import controlador.ItemAgendaView;
 
@@ -141,7 +142,7 @@ public class VentanaPrincipal extends JFrame {
         JMenu mnAgenda = new JMenu("Agenda");
         menuBar.add(mnAgenda);
         
-        JMenuItem mntmReglas = new JMenuItem("Reglas");
+        JMenuItem mntmReglas = new JMenuItem("Reglas de programaci\u00F3n de turnos");
         mntmReglas.addActionListener(new ActionListener() {
         	@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -197,7 +198,6 @@ public class VentanaPrincipal extends JFrame {
 		}				
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void cargarAgenda()
 	{
 		try
@@ -211,12 +211,19 @@ public class VentanaPrincipal extends JFrame {
 			Date hasta = Date.from(zdt.toInstant());
 						
 			ArrayList<CalendarEvent> eventos = new ArrayList<CalendarEvent>();
-			List<ItemAgendaView> agenda = AdminTurnos.getInstancia().obtenerAgenda(desde, hasta, idNombreProfesional.getId());
-			for (ItemAgendaView item: agenda)
+			AgendaView agenda = AdminTurnos.getInstancia().obtenerAgenda(desde, hasta, idNombreProfesional.getId());
+			for (ItemAgendaView item: agenda.getVistaTurnos())
 			{
 				eventos.add(crearEvento(item.getFechaHoraInicio(), item.getFechaHoraFin(), item.getApellido(), item.getNombre(), item.getDNI(), item.getIdTurno()));
 			}
 			calendario.setEvents(eventos);
+			
+			if (agenda.getVistaErrores().size() > 0)
+			{
+				ErroresReglas formErrores = new ErroresReglas(agenda.getVistaErrores());
+				formErrores.setAlwaysOnTop(true);
+				formErrores.setVisible(true);
+			}
 		}
 		catch (Exception e)
 		{
@@ -240,7 +247,7 @@ public class VentanaPrincipal extends JFrame {
 				int duracion = 60; // TODO: deshardcodear duracion, tiene que salir del profesional
 				Date inicio = formTurno.getFechaHora();
 								
-				AdminTurnos.getInstancia().reservar(formTurno.getIDPaciente(), idNombreProfesional.getId(), inicio, duracion);
+				AdminTurnos.getInstancia().reservar(formTurno.getIDPaciente(), idNombreProfesional.getId(), inicio);
 				
 				java.util.Calendar cal = java.util.Calendar.getInstance();
 				cal.setTime(inicio);

@@ -3,14 +3,15 @@ package modelo;
 public class Profesional {
 	private int id;
 	private String especialidad;
+	private int duracionTurno;
 	private String telefono;
 	private Boolean activo;
-
 	
-	public Profesional(int id, String especialidad, String telefono, Boolean activo)
+	public Profesional(int id, String especialidad, int duracionTurno, String telefono, Boolean activo)
 	{
 		this.setId(id);
 		this.setEspecialidad(especialidad);
+		this.setDuracionTurno(duracionTurno);
 		this.setTelefono(telefono);
 		this.setActivo(activo);
 	}
@@ -45,5 +46,13 @@ public class Profesional {
 
 	public void setActivo(Boolean activo) {
 		this.activo = activo;
+	}
+
+	public int getDuracionTurno() {
+		return duracionTurno;
+	}
+
+	public void setDuracionTurno(int duracionTurno) {
+		this.duracionTurno = duracionTurno;
 	}
 }

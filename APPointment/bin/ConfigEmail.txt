@@ -1,0 +1,7 @@
+mail.smtp.host=smtp.gmail.com
+mail.smtp.port=587
+mail.smtp.auth=true
+mail.smtp.starttls.enable=true
+smtpUsuario=appointment.web@gmail.com
+smtpPassword=qwer8520
+de=appointment.web@gmail.com

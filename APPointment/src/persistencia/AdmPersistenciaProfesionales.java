@@ -58,15 +58,16 @@ public class AdmPersistenciaProfesionales {
 		try
 		{
 			cnx = PoolConexiones.getInstancia().getConnection();
-			PreparedStatement cmdSql = cnx.prepareStatement("SELECT ID,ID_Usuario,especialidad,telefono,activo FROM Profesional WHERE ID=?");
+			PreparedStatement cmdSql = cnx.prepareStatement("SELECT ID,ID_Usuario,especialidad,duracionTurno,telefono,activo FROM Profesional WHERE ID=?");
 			cmdSql.setInt(1, id);
 			ResultSet result = cmdSql.executeQuery();
 			if (result.next())
 			{
 				String especialidad = result.getString(3);
-				String telefono = result.getString(4);
-				Boolean activo = result.getBoolean(5);
-				profesional = new Profesional(id, especialidad, telefono, activo);
+				int duracionTurno = result.getInt(4);
+				String telefono = result.getString(5);
+				Boolean activo = result.getBoolean(6);
+				profesional = new Profesional(id, especialidad, duracionTurno, telefono, activo);
 			}
 			PoolConexiones.getInstancia().realeaseConnection(cnx);
 			return profesional;

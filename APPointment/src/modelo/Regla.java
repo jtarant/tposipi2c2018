@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -129,16 +130,32 @@ public class Regla
 		actualizar();
 	}
 	
+	public static LocalDate getInicioMes(Date fecha)
+	{
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(fecha);
+		return LocalDate.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, 1);
+	}
+	
+	public static LocalDate getFinMes(Date fecha)
+	{
+		LocalDate desde = getInicioMes(fecha);
+		return desde.plusMonths(1).minusDays(1);
+	}
+	
 	@SuppressWarnings("deprecation")
 	public List<Date> calcularFechas(Date mes)
 	{
 		List<Date> fechas = new ArrayList<Date>();
-		LocalDate periodoDesde = LocalDate.of(mes.getYear(), mes.getMonth(), 1);
-		LocalDate periodoHasta = periodoDesde.plusMonths(1).minusDays(1);
-		LocalDate fecha = getFechaInicio().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate periodoDesde = getInicioMes(mes);
+		LocalDate periodoHasta = getFinMes(mes);
+		LocalDate fecha = new Date(this.getFechaInicio().getTime()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		Date nuevaFecha;
 		
-		while (fecha.getDayOfWeek() != getRepiteDia()) fecha.plusDays(1);
+		while (fecha.getDayOfWeek() != getRepiteDia())
+		{
+			fecha = fecha.plusDays(1);
+		}
 		while (fecha.compareTo(periodoHasta)<=0)
 		{
 			if (fecha.compareTo(periodoDesde)>=0)
@@ -147,6 +164,7 @@ public class Regla
 				nuevaFecha.setHours(getHora().getHours());
 				nuevaFecha.setMinutes(getHora().getMinutes());
 				fechas.add(nuevaFecha);
+				System.out.println(nuevaFecha);
 			}
 			fecha = fecha.plusWeeks(getRepiteCada());
 		}

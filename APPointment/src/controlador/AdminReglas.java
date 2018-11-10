@@ -1,6 +1,8 @@
 package controlador;
 
 import java.time.DayOfWeek;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -100,6 +102,59 @@ public class AdminReglas
 			regla.eliminar();
 			reglas.replace(regla.getId(), regla);
 		}
+	}
+	
+	private List<Regla> obtenerReglas(int idProfesional, Date desde, Date hasta) throws Exception
+	{
+		List<Regla> reglas = new ArrayList<Regla>();
+		List<Integer> idReglas = AdmPersistenciaReglas.getInstancia().obtenerIdReglas(idProfesional, desde, hasta);
+		for (Integer id : idReglas)
+		{
+			Regla regla = this.buscar(id);
+			if (regla != null)
+				reglas.add(regla);
+		}
+		return reglas;
+	}
+	
+	public List<ErrorTurnoView> generarTurnos(Date fecha, int idProfesional) throws Exception
+	{
+		List<ErrorTurnoView> errores = new ArrayList<ErrorTurnoView>();
+		List<Regla> reglas = new ArrayList<Regla>();
+		List<Date> fechas;
+		
+		Date periodoDesde = Date.from(Regla.getInicioMes(fecha).atStartOfDay(ZoneId.systemDefault()).toInstant());
+		Date periodoHasta = Date.from(Regla.getFinMes(fecha).atStartOfDay(ZoneId.systemDefault()).toInstant());
+		periodoHasta.setHours(23);
+		periodoHasta.setMinutes(59);
+		periodoHasta.setSeconds(59);
+		
+		Boolean yaGenerados = AdminTurnos.getInstancia().existenTurnosGenerados(periodoDesde, periodoHasta, idProfesional);
+		
+		if (!yaGenerados)
+		{
+			reglas = obtenerReglas(idProfesional, periodoDesde, periodoHasta);
+			for	(Regla regla : reglas)
+			{
+				fechas = regla.calcularFechas(fecha);
+				for (Date fechaHora : fechas)
+				{
+					try
+					{
+						AdminTurnos.getInstancia().reservar(regla.getPaciente().getId(), idProfesional, fechaHora, regla.getId());						
+					}
+					catch (Exception exReserva)
+					{
+						ErrorTurnoView error = new ErrorTurnoView();
+						error.setCausa(exReserva.getMessage());
+						error.setFechaHoraInicio(fechaHora);
+						error.setPaciente(new IdNombreView(regla.getPaciente().getId(), regla.getPaciente().getApellido() + ", " + regla.getPaciente().getNombre()));
+						errores.add(error);
+					}
+				}
+			}
+		}
+		return errores;
 	}
 	
 	public void limpiarCache()

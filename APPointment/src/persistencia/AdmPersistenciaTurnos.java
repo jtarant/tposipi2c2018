@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +44,7 @@ public class AdmPersistenciaTurnos {
 			
 			StringBuilder query = new StringBuilder("IF EXISTS(SELECT TOP 1 ID FROM Turno WHERE fechaHoraInicio<? AND fechaHoraFin>? AND ID_Profesional=? AND Estado=0) ");
 			query.append("BEGIN RAISERROR('Superposicion',16,1) RETURN END ");
-			query.append("INSERT INTO Turno (ID_Profesional,ID_Paciente,fechaHoraInicio,fechaHoraFin,estado) VALUES (?,?,?,?,?)");
+			query.append("INSERT INTO Turno (ID_Profesional,ID_Paciente,fechaHoraInicio,fechaHoraFin,estado,ID_ReglaTurnoProgramado) VALUES (?,?,?,?,?,?)");
 			
 			PreparedStatement cmdSql = cnx.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
 			// para verificar superposicion
@@ -56,6 +57,14 @@ public class AdmPersistenciaTurnos {
 			cmdSql.setTimestamp(6, new Timestamp(turno.getFechaHoraInicio().getTime()));
 			cmdSql.setTimestamp(7, new Timestamp(turno.getFechaHoraFin().getTime()));
 			cmdSql.setInt(8, turno.getEstado().getValor());
+			if (turno.getIdReglaOrigen() == null)
+			{
+				cmdSql.setNull(9, Types.INTEGER);
+			}
+			else
+			{
+				cmdSql.setInt(9, turno.getIdReglaOrigen().intValue());
+			}
 			cmdSql.execute();
 			clavesGeneradas = cmdSql.getGeneratedKeys();
 			if (clavesGeneradas.next())
@@ -66,7 +75,7 @@ public class AdmPersistenciaTurnos {
 		}
 		catch (SQLException se)
 		{
-			if (se.getMessage().equalsIgnoreCase("Superposicion")) throw new ExceptionDeNegocio("El horario ya esta ocupado por otro paciente.");
+			if (se.getMessage().equalsIgnoreCase("Superposicion")) throw new ExceptionDeNegocio("El horario ya esta ocupado.");
 			else throw se;
 		}
 		catch (Exception e)
@@ -101,7 +110,7 @@ public class AdmPersistenciaTurnos {
 				Paciente pacienteGhost = new Paciente(IdPaciente,null,null,0,null,null,null,null);
 				pacienteGhost.setId(IdPaciente);
 				
-				Profesional profesionalGhost = new Profesional(IdProfesional,null,null,null);
+				Profesional profesionalGhost = new Profesional(IdProfesional,null,0,null,null);
 				profesionalGhost.setId(IdProfesional);
 				
 				turno = new Turno(id, profesionalGhost, pacienteGhost, fechaHoraInicio, fechaHoraFin, EstadoTurno.fromInt(estado));
@@ -234,6 +243,32 @@ public class AdmPersistenciaTurnos {
 			System.out.println(e.getMessage());
 			throw e;
 		}				
+		finally
+		{
+			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
+		}
+	}
+
+	public Boolean existenTurnosGenerados(Date desde, Date hasta, int idProfesional) throws Exception 
+	{
+		Connection cnx = null;
+		try
+		{
+			cnx = PoolConexiones.getInstancia().getConnection();
+			PreparedStatement cmdSql = cnx.prepareStatement("SELECT COUNT(ID_ReglaTurnoProgramado) FROM Turno WHERE fechaHoraInicio>=? AND fechaHoraFin<=? AND ID_Profesional=?");
+			cmdSql.setTimestamp(1, new Timestamp(desde.getTime()));
+			cmdSql.setTimestamp(2, new Timestamp(hasta.getTime()));
+			cmdSql.setInt(3, idProfesional);
+			ResultSet result = cmdSql.executeQuery();
+			PoolConexiones.getInstancia().realeaseConnection(cnx);
+			result.next();
+			return (result.getInt(1)!=0);
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw e;
+		}
 		finally
 		{
 			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 

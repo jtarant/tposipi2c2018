@@ -13,12 +13,19 @@ public class Turno
 	private Date fechaHoraInicio;
 	private Date fechaHoraFin;
 	private EstadoTurno estado;
+	private Integer idReglaOrigen;
 	
 	public Turno(Profesional profesional, Paciente paciente, Date fechaHoraInicio, int duracion) throws Exception
+	{
+		this(profesional, paciente, fechaHoraInicio, duracion, null);
+	}
+	
+	public Turno(Profesional profesional, Paciente paciente, Date fechaHoraInicio, int duracion, Integer idReglaOrigen) throws Exception
 	{
 		this.setProfesional(profesional);
 		this.setPaciente(paciente);
 		this.setFechaHoraInicio(fechaHoraInicio);
+		this.setIdReglaOrigen(idReglaOrigen);
 		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(fechaHoraInicio);
@@ -87,6 +94,14 @@ public class Turno
 		this.id = id;
 	}
 	
+	public Integer getIdReglaOrigen() {
+		return idReglaOrigen;
+	}
+
+	public void setIdReglaOrigen(Integer idReglaOrigen) {
+		this.idReglaOrigen = idReglaOrigen;
+	}
+
 	public void cancelar() throws Exception
 	{
 		if (getEstado() != EstadoTurno.ABIERTO) throw new ExceptionDeNegocio("No se puede anular un turno que no esta abierto.");
