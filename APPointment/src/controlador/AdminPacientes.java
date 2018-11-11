@@ -41,6 +41,14 @@ public class AdminPacientes {
 		}
 	}
 	
+	public PacienteView obtener(int id) throws Exception
+	{
+		Paciente p = buscar(id);
+		if (p != null)
+			return p.getView();
+		else return null;
+	}
+	
 	public void limpiarCache()
 	{
 		pacientes.clear();

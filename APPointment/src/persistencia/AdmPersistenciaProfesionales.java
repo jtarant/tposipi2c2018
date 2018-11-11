@@ -3,11 +3,14 @@ package persistencia;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import controlador.IdNombreView;
+import modelo.Prestacion;
 import modelo.Profesional;
+import modelo.Servicio;
 
 public class AdmPersistenciaProfesionales {
 	private static AdmPersistenciaProfesionales instancia;
@@ -70,7 +73,8 @@ public class AdmPersistenciaProfesionales {
 				int duracionTurno = result.getInt(4);
 				String telefono = result.getString(5);
 				Boolean activo = result.getBoolean(6);
-				profesional = new Profesional(id, especialidad, duracionTurno, telefono, activo);
+				List<Prestacion> prestaciones = obtenerPrestaciones(id, cnx);
+				profesional = new Profesional(id, especialidad, duracionTurno, telefono, activo, prestaciones);
 				profesional.setNombre(result.getString(7));
 				profesional.setApellido(result.getString(8));
 			}
@@ -86,5 +90,25 @@ public class AdmPersistenciaProfesionales {
 		{
 			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
 		}		
+	}
+	
+	private List<Prestacion> obtenerPrestaciones(int idProfesional, Connection cnx) throws SQLException
+	{
+		List<Prestacion> prestaciones = new ArrayList<Prestacion>();
+		
+		StringBuilder sql = new StringBuilder("SELECT servicio.ID AS ID_Servicio,servicio.nombre,prestacion.ID AS ID_Prestacion,importeHonorarios FROM Prestacion ");
+		sql.append("INNER JOIN Profesional ON Prestacion.ID_Profesional=Profesional.ID ");
+		sql.append("INNER JOIN Servicio ON Prestacion.ID_Servicio=Servicio.ID ");
+		sql.append("WHERE Servicio.activo=1 AND Profesional.ID=?");
+		PreparedStatement cmdSql = cnx.prepareStatement(sql.toString());
+		cmdSql.setInt(1, idProfesional);
+		ResultSet result = cmdSql.executeQuery();
+		
+		while (result.next())
+		{
+			Prestacion p = new Prestacion(result.getInt(3), new Servicio(result.getInt(1), result.getString(2)), result.getFloat(4));
+			prestaciones.add(p);
+		}
+		return prestaciones;
 	}
 }

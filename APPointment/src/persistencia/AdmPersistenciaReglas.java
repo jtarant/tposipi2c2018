@@ -165,10 +165,10 @@ public class AdmPersistenciaReglas
 				int repiteCada = result.getInt(7);
 				Boolean activo = result.getBoolean(8);
 				
-				Paciente pacienteGhost = new Paciente(IdPaciente,null,null,0,null,null,null,null);
+				Paciente pacienteGhost = new Paciente(IdPaciente,null,null,0,null,null,null,null,null);
 				pacienteGhost.setId(IdPaciente);
 				
-				Profesional profesionalGhost = new Profesional(IdProfesional,null,0,null,null);
+				Profesional profesionalGhost = new Profesional(IdProfesional,null,0,null,null,null);
 				profesionalGhost.setId(IdProfesional);
 				
 				regla = new Regla(id, profesionalGhost, pacienteGhost, fechaInicio, fechaFin, dia, hora, repiteCada, activo); 

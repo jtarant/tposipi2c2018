@@ -1,21 +1,30 @@
 package modelo;
 
-import controlador.IdNombreView;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Profesional extends Usuario {
+import controlador.IdNombreView;
+import controlador.PrestacionView;
+import controlador.ProfesionalView;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+public class Profesional extends Usuario 
+{
 	private int id;
 	private String especialidad;
 	private int duracionTurno;
 	private String telefono;
 	private Boolean activo;
-	
-	public Profesional(int id, String especialidad, int duracionTurno, String telefono, Boolean activo)
+	private List<Prestacion> prestaciones;
+
+	public Profesional(int id, String especialidad, int duracionTurno, String telefono, Boolean activo, List<Prestacion> prestaciones)
 	{
 		this.setId(id);
 		this.setEspecialidad(especialidad);
 		this.setDuracionTurno(duracionTurno);
 		this.setTelefono(telefono);
 		this.setActivo(activo);
+		this.prestaciones = prestaciones;
 	}
 	
 	public int getId() {
@@ -58,6 +67,22 @@ public class Profesional extends Usuario {
 		this.duracionTurno = duracionTurno;
 	}
 
+	public List<Prestacion> getPrestaciones() {
+		return prestaciones;
+	}	
+	
+	public void actualizar()
+	{
+		// RELEASE 2
+		throw new NotImplementedException();
+	}
+	
+	public void eliminar()
+	{
+		// RELEASE 2
+		throw new NotImplementedException();
+	}
+	
 	@Override
 	public IdNombreView getIdNombreView() 
 	{
@@ -65,6 +90,12 @@ public class Profesional extends Usuario {
 		idNombre.setId(getId());
 		return idNombre;
 	}
-	
-	
+
+	public ProfesionalView getView()
+	{
+		List<PrestacionView> pv = new ArrayList<PrestacionView>();
+		for (Prestacion p: getPrestaciones())
+			pv.add(p.getView());
+		return new ProfesionalView(getId(), getEspecialidad(), getDuracionTurno(), getTelefono(), getActivo(), pv);
+	}
 }

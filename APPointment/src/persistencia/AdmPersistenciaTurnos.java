@@ -107,10 +107,10 @@ public class AdmPersistenciaTurnos {
 				Date fechaHoraFin = result.getTimestamp(4);
 				int estado = result.getInt(5);
 				
-				Paciente pacienteGhost = new Paciente(IdPaciente,null,null,0,null,null,null,null);
+				Paciente pacienteGhost = new Paciente(IdPaciente,null,null,0,null,null,null,null,null);
 				pacienteGhost.setId(IdPaciente);
 				
-				Profesional profesionalGhost = new Profesional(IdProfesional,null,0,null,null);
+				Profesional profesionalGhost = new Profesional(IdProfesional,null,0,null,null,null);
 				profesionalGhost.setId(IdProfesional);
 				
 				turno = new Turno(id, profesionalGhost, pacienteGhost, fechaHoraInicio, fechaHoraFin, EstadoTurno.fromInt(estado));

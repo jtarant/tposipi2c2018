@@ -1,10 +1,15 @@
 package modelo;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import controlador.CoberturaView;
 import controlador.IdNombreView;
+import controlador.PacienteView;
 
-public class Paciente {
+public class Paciente 
+{
 	private int id;
 	private String apellido;
 	private String nombre;
@@ -13,13 +18,14 @@ public class Paciente {
 	private String telefono;
 	private String email;
 	private Boolean activo;
+	private List<Cobertura> coberturas;
 
-	public Paciente(String apellido, String nombre, int DNI, Date fechaNacimiento, String telefono, String email)
+	public Paciente(String apellido, String nombre, int DNI, Date fechaNacimiento, String telefono, String email, Boolean activo, List<Cobertura> coberturas)
 	{
-		
+		// TODO: implementar. hace el insert
 	}
 	
-	public Paciente(int id, String apellido, String nombre, int DNI, Date fechaNacimiento, String telefono, String email, Boolean activo)
+	public Paciente(int id, String apellido, String nombre, int DNI, Date fechaNacimiento, String telefono, String email, Boolean activo, List<Cobertura> coberturas)
 	{
 		this.setId(id);
 		this.setApellido(apellido);
@@ -29,6 +35,7 @@ public class Paciente {
 		this.setTelefono(telefono);
 		this.setEmail(email);
 		this.setActivo(activo);
+		this.setCoberturas(coberturas);
 	}
 	
 	public int getId() {
@@ -98,11 +105,37 @@ public class Paciente {
 		this.activo = activo;
 	}
 	
+	public List<Cobertura> getCoberturas() {
+		return coberturas;
+	}
+
+	public void setCoberturas(List<Cobertura> coberturas) {
+		this.coberturas = coberturas;
+	}
+	
+	public void actualizar()
+	{
+		// TODO: implementar
+	}
+	
+	public void eliminar()
+	{
+		// TODO: implementar
+	}
+
 	public IdNombreView getIdNombreView()
 	{
 		IdNombreView idNombre = new IdNombreView();
 		idNombre.setId(getId());
 		idNombre.setNombre(getApellido() + ", " + getNombre());
 		return idNombre;
+	}
+	
+	public PacienteView getView() throws Exception
+	{
+		List<CoberturaView> cv = new ArrayList<CoberturaView>();
+		for (Cobertura c : getCoberturas())
+			cv.add(c.getView());
+		return new PacienteView(getId(),getApellido(),getNombre(),getDNI(),getFechaNacimiento(),getTelefono(),getEmail(),getActivo(),cv);
 	}
 }

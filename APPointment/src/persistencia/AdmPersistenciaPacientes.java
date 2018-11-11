@@ -3,14 +3,15 @@ package persistencia;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import controlador.PacienteEncontradoView;
+import modelo.Cobertura;
 import modelo.Paciente;
-
-
+import modelo.Plan;
 
 public class AdmPersistenciaPacientes {
 	private static AdmPersistenciaPacientes instancia;
@@ -80,7 +81,8 @@ public class AdmPersistenciaPacientes {
 				String telefono = result.getString(5);
 				String email = result.getString(6);
 				Boolean activo = result.getBoolean(7);
-				paciente = new Paciente(id, apellido, nombre, dni, fechaNac, telefono, email, activo);
+				List<Cobertura> coberturas = obtenerCoberturas(id, cnx);
+				paciente = new Paciente(id, apellido, nombre, dni, fechaNac, telefono, email, activo, coberturas);
 			}
 			PoolConexiones.getInstancia().realeaseConnection(cnx);
 			return paciente;
@@ -94,5 +96,25 @@ public class AdmPersistenciaPacientes {
 		{
 			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
 		}		
+	}
+
+	private List<Cobertura> obtenerCoberturas(int idPaciente, Connection cnx) throws SQLException
+	{
+		List<Cobertura> coberturas = new ArrayList<Cobertura>();
+		
+		StringBuilder sql = new StringBuilder("SELECT cobertura.ID AS ID_Cobertura,[plan].ID AS ID_Plan,[Plan].nombre AS NombrePlan, nroCredencial, primaria FROM Cobertura ");
+		sql.append("INNER JOIN dbo.[Plan] ON Cobertura.ID_Plan=dbo.[Plan].ID ");
+		sql.append("WHERE dbo.[Plan].activo=1 AND ID_Paciente=? ORDER BY primaria");
+		PreparedStatement cmdSql = cnx.prepareStatement(sql.toString());
+		cmdSql.setInt(1, idPaciente);
+		ResultSet result = cmdSql.executeQuery();
+		
+		if (result.next())
+		{
+			Plan plan = new Plan(result.getInt(2), result.getString(3), null);
+			Cobertura c = new Cobertura(result.getInt(1), result.getString(4), result.getBoolean(5), plan);
+			coberturas.add(c);
+		}
+		return coberturas;
 	}
 }

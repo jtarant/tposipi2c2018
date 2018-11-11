@@ -41,6 +41,16 @@ public class AdminProfesionales {
 		}
 	}
 	
+	public ProfesionalView obtener(int id) throws Exception
+	{
+		Profesional p = this.buscar(id);
+		if (p != null)
+		{
+			return p.getView();
+		}
+		else return null;
+	}
+	
 	public void limpiarCache()
 	{
 		profesionales.clear();

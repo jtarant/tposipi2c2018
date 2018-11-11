@@ -1,2 +1,6 @@
 /META-INF/
 /.gitignore
+/modelo/
+/persistencia/
+/vista/
+/controlador/

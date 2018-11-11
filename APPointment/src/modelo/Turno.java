@@ -3,7 +3,6 @@ package modelo;
 import java.util.Calendar;
 import java.util.Date;
 
-import controlador.IdNombreView;
 import controlador.TurnoView;
 import persistencia.AdmPersistenciaTurnos;
 
@@ -106,7 +105,6 @@ public class Turno
 
 	public void cancelar() throws Exception
 	{
-		if (getEstado() != EstadoTurno.ABIERTO) throw new ExceptionDeNegocio("No se puede anular un turno que no esta abierto.");
 		AdmPersistenciaTurnos.getInstancia().anular(getId());
 	}
 	

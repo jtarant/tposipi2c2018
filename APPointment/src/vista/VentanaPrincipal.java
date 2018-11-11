@@ -125,6 +125,12 @@ public class VentanaPrincipal extends JFrame {
         popupMenu = new JPopupMenu();
         
         JMenuItem mntmAdmitir = new JMenuItem("Admitir");
+        mntmAdmitir.addActionListener(new ActionListener() {
+        	@Override
+			public void actionPerformed(ActionEvent arg0) {
+        		admitirTurno();
+        	}
+        });
         popupMenu.add(mntmAdmitir);
         
         JMenuItem mntmCancelar = new JMenuItem("Cancelar");
@@ -320,5 +326,21 @@ public class VentanaPrincipal extends JFrame {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error cancelar el turno:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}		
+	}
+	
+	private void admitirTurno()
+	{
+		try 
+		{
+			DatosAdmision form = new DatosAdmision(eventoSeleccionado.getID());
+			form.setLocationRelativeTo(null);
+			form.setVisible(true);
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error cancelar el turno:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}		
 	}	
+
 }
