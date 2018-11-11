@@ -29,4 +29,9 @@ public class CoberturaView
 	public Boolean getPrimaria() {
 		return primaria;
 	}
+
+	@Override
+	public String toString() {
+		return getNumeroCredencial();
+	}
 }

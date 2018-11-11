@@ -40,7 +40,7 @@ public class AdmPersistenciaObrasSociales
 			cmdSql.setInt(1, idPlan);
 			ResultSet result = cmdSql.executeQuery();
 			
-			if (result.next())
+			while (result.next())
 			{
 				AlcanceCobertura a = new AlcanceCobertura(result.getInt(1), new Servicio(result.getInt(2), result.getString(3)), result.getFloat(4));
 				alcances.add(a);
