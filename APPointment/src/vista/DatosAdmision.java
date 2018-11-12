@@ -6,13 +6,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.MaskFormatter;
+import javax.swing.text.NumberFormatter;
+
+import com.sun.javafx.font.freetype.FTFactory;
 
 import controlador.AdminPacientes;
 import controlador.AdminProfesionales;
@@ -20,6 +28,7 @@ import controlador.AdminTurnos;
 import controlador.AlcanceCoberturaView;
 import controlador.CoberturaView;
 import controlador.IdNombreView;
+import controlador.ItemAdmisionView;
 import controlador.PacienteEncontradoView;
 import controlador.PacienteView;
 import controlador.PrestacionView;
@@ -36,6 +45,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.JFormattedTextField;
 
@@ -51,6 +63,13 @@ public class DatosAdmision extends JDialog {
 	private JRadioButton rdbtnParticular;
 	private JTable tblAdmision;
 	private JLabel lblAbonar;
+	private JButton btnQuitar;
+	private JButton okButton;
+	private JLabel lblNombrepaciente;
+	private JLabel lblNombreprofesional;
+	private JLabel lblDiahoraturno;
+	private JFormattedTextField ftfAbonado;
+	private Boolean cancelado;
 	private List<itemAdmision> itemsAdmision = new ArrayList<itemAdmision>();
 	
 	/**
@@ -119,7 +138,18 @@ public class DatosAdmision extends JDialog {
 		scrollpane.add(tblAdmision.getTableHeader());
 		scrollpane.setBounds(15, 266, 703, 132);
 		tblAdmision.getTableHeader().setReorderingAllowed(false);
-
+		tblAdmision.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent event) {
+				if (tblAdmision.getSelectedRow() != -1)
+				{
+					btnQuitar.setEnabled(true);
+				}
+				else
+				{
+					btnQuitar.setEnabled(false);
+				}
+			}
+		});
 		contentPanel.add(scrollpane);
 		
 		JButton btnAgregar = new JButton("+");
@@ -128,7 +158,7 @@ public class DatosAdmision extends JDialog {
 				agregarItem();
 			}
 		});
-		btnAgregar.setBounds(612, 228, 45, 29);
+		btnAgregar.setBounds(622, 228, 45, 29);
 		contentPanel.add(btnAgregar);
 		
 		JLabel lblImporteAAbonar = new JLabel("Importe a abonar:");
@@ -143,21 +173,62 @@ public class DatosAdmision extends JDialog {
 		lblImporteAbonado.setBounds(435, 412, 141, 20);
 		contentPanel.add(lblImporteAbonado);
 		
-		JFormattedTextField ftfAbonado = new JFormattedTextField();
+		ftfAbonado = new JFormattedTextField(new NumberFormatter());
 		ftfAbonado.setBounds(591, 409, 125, 23);
 		contentPanel.add(ftfAbonado);
+		
+		btnQuitar = new JButton("-");
+		btnQuitar.setEnabled(false);
+		btnQuitar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+		    	eliminarItem((int)tblAdmision.getValueAt(tblAdmision.getSelectedRow(), 0));				
+			}
+		});
+		btnQuitar.setBounds(672, 228, 45, 29);
+		contentPanel.add(btnQuitar);
+		
+		lblNombrepaciente = new JLabel("NombrePaciente");
+		lblNombrepaciente.setBounds(127, 16, 589, 20);
+		contentPanel.add(lblNombrepaciente);
+		
+		lblNombreprofesional = new JLabel("NombreProfesional");
+		lblNombreprofesional.setBounds(127, 52, 591, 20);
+		contentPanel.add(lblNombreprofesional);
+		
+		lblDiahoraturno = new JLabel("DiaHoraTurno");
+		lblDiahoraturno.setBounds(127, 88, 591, 20);
+		contentPanel.add(lblDiahoraturno);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("Aceptar");
+				okButton = new JButton("Aceptar");
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) 
+					{
+						if (!ValidadorTexto.esMonedaValida(ftfAbonado.getText()))
+							JOptionPane.showMessageDialog(null, "El importe abonado no es valido.");
+						else
+						{
+							cancelado = false;
+							setVisible(false);
+						}
+					}
+				});
+				okButton.setEnabled(false);
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
 				JButton cancelButton = new JButton("Cancelar");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						cancelado = true;
+						setVisible(false);
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
@@ -173,8 +244,13 @@ public class DatosAdmision extends JDialog {
 		try
 		{
 			this.turno = AdminTurnos.getInstancia().obtenerTurno(id);
+			lblDiahoraturno.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(turno.getFechaHoraInicio()));
+			
 			this.profesional = AdminProfesionales.getInstancia().obtener(turno.getProfesional().getId());
+			lblNombreprofesional.setText(turno.getProfesional().getNombre());
+			
 			this.paciente = AdminPacientes.getInstancia().obtener(turno.getPaciente().getId());
+			lblNombrepaciente.setText(turno.getPaciente().getNombre());
 		}
 		catch (Exception e)
 		{
@@ -261,6 +337,12 @@ public class DatosAdmision extends JDialog {
 		}
 	}
 	
+	private void eliminarItem(int idServicio)
+	{
+		itemsAdmision.removeIf(e -> e.getIdServicio() == idServicio);
+		llenarGrilla();
+	}
+	
 	private void setImporteAbonar(float valor)
 	{
 		lblAbonar.setText(String.format("%.2f", valor));
@@ -299,7 +381,37 @@ public class DatosAdmision extends JDialog {
 		tblAdmision.getColumnModel().getColumn(0).setWidth(0);
 		tblAdmision.getColumnModel().getColumn(0).setMinWidth(0);
 		tblAdmision.getColumnModel().getColumn(0).setMaxWidth(0);
-		tblAdmision.validate();		
+		tblAdmision.validate();
+		okButton.setEnabled((tblAdmision.getRowCount()>0));
+	}
+	
+	public Boolean getCancelado() 
+	{
+		return cancelado;
+	}
+	
+	public List<ItemAdmisionView> getItemsAdmision()
+	{
+		List<ItemAdmisionView> dataAdmision = new ArrayList<ItemAdmisionView>();
+		for(itemAdmision item : this.itemsAdmision)
+		{
+			Integer idCobertura;
+			if (item.getCobertura() != null)
+			{
+				idCobertura = item.getCobertura().getId();
+			}
+			else
+			{
+				idCobertura = null;
+			}
+			dataAdmision.add(new ItemAdmisionView(item.getIdServicio(), idCobertura));
+		}
+		return dataAdmision;
+	}
+	
+	public float getImporteAbonado()
+	{
+		return Float.parseFloat(ftfAbonado.getText());
 	}
 }
 

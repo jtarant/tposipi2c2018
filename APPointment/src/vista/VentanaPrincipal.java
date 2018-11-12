@@ -335,11 +335,16 @@ public class VentanaPrincipal extends JFrame {
 			DatosAdmision form = new DatosAdmision(eventoSeleccionado.getID());
 			form.setLocationRelativeTo(null);
 			form.setVisible(true);
+			if (!form.getCancelado())
+			{
+				
+				
+			}
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error cancelar el turno:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Error al guardar la admision:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}		
 	}	
 

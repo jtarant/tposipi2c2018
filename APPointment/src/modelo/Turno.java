@@ -2,7 +2,9 @@ package modelo;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import controlador.ItemAdmisionView;
 import controlador.TurnoView;
 import persistencia.AdmPersistenciaTurnos;
 
@@ -107,6 +109,11 @@ public class Turno
 	{
 		AdmPersistenciaTurnos.getInstancia().anular(getId());
 	}
+	
+	public void admitir(List<ItemAdmisionView> items, float importeAbonado) 
+	{
+		
+	}	
 	
 	public TurnoView getView()
 	{

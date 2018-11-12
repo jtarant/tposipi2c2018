@@ -36,7 +36,7 @@ public class ValidadorTexto {
 		try 
 		{
 			float monto = Float.parseFloat(valor);
-			if (monto <= 0)
+			if (monto < 0)
 				return false;
 			else
 				return true;

@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import modelo.EmailRecordatorioTurno;
+import modelo.EstadoTurno;
 import modelo.ExceptionDeNegocio;
 import modelo.NotificadorEmail;
 import modelo.Paciente;
@@ -133,6 +134,20 @@ public class AdminTurnos {
 			throw new ExceptionDeNegocio("No se pudo encontrar el turno.");
 		else
 			turno.cancelar();
+	}
+	
+	public void admitir(int id, List<ItemAdmisionView> items, float importeAbonado) throws Exception
+	{
+		Turno turno = buscar(id);
+		if (turno == null)
+			throw new ExceptionDeNegocio("No se pudo encontrar el turno.");
+		else
+		{
+			if (turno.getEstado() != EstadoTurno.ABIERTO)
+				throw new ExceptionDeNegocio("Este turno ya fue admitido.");
+			else
+				turno.admitir(items, importeAbonado);
+		}
 	}
 	
 	public Boolean existenTurnosGenerados(Date desde, Date hasta, int idProfesional) throws Exception
