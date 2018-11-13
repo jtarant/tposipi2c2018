@@ -1,6 +1,7 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import controlador.IdNombreView;
@@ -69,7 +70,18 @@ public class Profesional extends Usuario
 
 	public List<Prestacion> getPrestaciones() {
 		return prestaciones;
-	}	
+	}
+	
+	public Prestacion obtenerPrestacion(int idServicio)
+	{
+		Iterator<Prestacion> iterador = getPrestaciones().iterator();
+		while (iterador.hasNext())
+		{
+			Prestacion p = iterador.next();
+			if (p.getServicio().getId() == idServicio) return p;
+		}
+		return null;
+	}
 	
 	public void actualizar()
 	{

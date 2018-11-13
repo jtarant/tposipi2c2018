@@ -2,6 +2,7 @@ package modelo;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import controlador.CoberturaView;
@@ -109,6 +110,17 @@ public class Paciente
 		return coberturas;
 	}
 
+	public Cobertura obtenerCobertura(int id)
+	{
+		Iterator<Cobertura> iterador = getCoberturas().iterator();
+		while (iterador.hasNext())
+		{
+			Cobertura c = iterador.next();
+			if (c.getId() == id) return c;
+		}
+		return null;
+	}
+	
 	public void setCoberturas(List<Cobertura> coberturas) {
 		this.coberturas = coberturas;
 	}

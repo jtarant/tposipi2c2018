@@ -255,7 +255,7 @@ public class VentanaPrincipal extends JFrame {
 			formTurno.setVisible(true);
 			if (!formTurno.getCancelado())
 			{
-				int duracion = 60; // TODO: deshardcodear duracion, tiene que salir del profesional
+				int duracion = 60; // TODO: obtenerla del profesional
 				Date inicio = formTurno.getFechaHora();
 								
 				AdminTurnos.getInstancia().reservar(formTurno.getIDPaciente(), idNombreProfesional.getId(), inicio);
@@ -337,15 +337,14 @@ public class VentanaPrincipal extends JFrame {
 			form.setVisible(true);
 			if (!form.getCancelado())
 			{
-				
-				
+				AdminTurnos.getInstancia().admitir(eventoSeleccionado.getID(), form.getItemsAdmision(), form.getImporteAbonado());
 			}
+			form.dispose();
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error al guardar la admision:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}		
-	}	
-
+	}
 }

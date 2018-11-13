@@ -17,6 +17,7 @@ public class Turno
 	private Date fechaHoraFin;
 	private EstadoTurno estado;
 	private Integer idReglaOrigen;
+	private Admision admision;
 	
 	public Turno(Profesional profesional, Paciente paciente, Date fechaHoraInicio, int duracion) throws Exception
 	{
@@ -105,15 +106,45 @@ public class Turno
 		this.idReglaOrigen = idReglaOrigen;
 	}
 
+	public Admision getAdmision()
+	{
+		return admision;
+	}
+
 	public void cancelar() throws Exception
 	{
 		AdmPersistenciaTurnos.getInstancia().anular(getId());
 	}
 	
-	public void admitir(List<ItemAdmisionView> items, float importeAbonado) 
+	public void admitir(List<ItemAdmisionView> items, float importeAbonado) throws Exception 
 	{
+		Admision admision = new Admision();
+		Prestacion prestacion;
+		Cobertura cobertura;
 		
-	}	
+		for (ItemAdmisionView item : items)
+		{
+			prestacion = this.profesional.obtenerPrestacion(item.getIdServicio());
+			if (prestacion == null) 
+				throw new ExceptionDeNegocio("El profesional no brinda la prestacion solicitada.");
+			
+			if (item.getIdCobertura() != null)
+			{
+				cobertura = this.paciente.obtenerCobertura(item.getIdCobertura());
+				if (cobertura == null)
+					throw new ExceptionDeNegocio("El paciente no tiene la cobertura seleccionada.");
+			}
+			else
+			{
+				cobertura = null;
+			}
+			admision.agregarDetalle(prestacion, cobertura);			
+		}
+		admision.setTotalAbonado(importeAbonado);
+		this.admision = admision;
+		setEstado(EstadoTurno.CERRADO);
+		AdmPersistenciaTurnos.getInstancia().insertarAdmision(this);
+	}
 	
 	public TurnoView getView()
 	{

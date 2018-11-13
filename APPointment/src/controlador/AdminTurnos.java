@@ -144,7 +144,7 @@ public class AdminTurnos {
 		else
 		{
 			if (turno.getEstado() != EstadoTurno.ABIERTO)
-				throw new ExceptionDeNegocio("Este turno ya fue admitido.");
+				throw new ExceptionDeNegocio("No se puede realizar la admision sobre este turno.");
 			else
 				turno.admitir(items, importeAbonado);
 		}

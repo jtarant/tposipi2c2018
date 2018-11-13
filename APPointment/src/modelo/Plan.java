@@ -1,6 +1,7 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import controlador.AlcanceCoberturaView;
@@ -27,7 +28,7 @@ public class Plan
 		return nombre;
 	}
 
-	public List<AlcanceCobertura> getAlcanceCobertura() throws Exception 
+	public List<AlcanceCobertura> getAlcancesCobertura() throws Exception 
 	{
 		// Lazy-Loading, dado que solo se usa en admision
 		if (alcanceCobertura == null)
@@ -36,11 +37,22 @@ public class Plan
 		}
 		return alcanceCobertura;
 	}
-	
+
+	public AlcanceCobertura obtenerAlcanceCobertura(int idServicio) throws Exception
+	{
+		Iterator<AlcanceCobertura> iterador = getAlcancesCobertura().iterator();
+		while (iterador.hasNext())
+		{
+			AlcanceCobertura ac = iterador.next();
+			if (ac.getServicio().getId() == idServicio) return ac;
+		}
+		return null;
+	}
+
 	public PlanView getView() throws Exception
 	{
 		List<AlcanceCoberturaView> av = new ArrayList<AlcanceCoberturaView>();
-		for(AlcanceCobertura ac : getAlcanceCobertura())
+		for(AlcanceCobertura ac : getAlcancesCobertura())
 			av.add(ac.getView());
 		return new PlanView(getId(), getNombre(), av);
 	}
