@@ -237,6 +237,7 @@ public class DatosAdmision extends JDialog {
 		cargarServicios();
 		cargarCoberturas();
 		setImporteAbonar(0);
+		cancelado = true;
 	}
 	
 	private void inicializarFormulario(int id)

@@ -338,6 +338,7 @@ public class VentanaPrincipal extends JFrame {
 			if (!form.getCancelado())
 			{
 				AdminTurnos.getInstancia().admitir(eventoSeleccionado.getID(), form.getItemsAdmision(), form.getImporteAbonado());
+				JOptionPane.showMessageDialog(null, "Admision realizada correctamente.", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 			}
 			form.dispose();
 		}
