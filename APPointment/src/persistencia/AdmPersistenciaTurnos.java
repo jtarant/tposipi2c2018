@@ -139,7 +139,7 @@ public class AdmPersistenciaTurnos {
 			cnx = PoolConexiones.getInstancia().getConnection();
 			
 			StringBuilder query = new StringBuilder("SELECT turno.ID, turno.fechaHoraInicio, turno.fechaHoraFin,");
-			query.append("paciente.ID, paciente.apellido, paciente.nombre, paciente.DNI ");
+			query.append("paciente.ID, paciente.apellido, paciente.nombre, paciente.DNI, estado ");
 			query.append("FROM Turno INNER JOIN Paciente ON turno.ID_Paciente=Paciente.ID ");
 			query.append("WHERE turno.estado<>? ");
 			query.append("AND turno.ID_Profesional=? ");
@@ -164,6 +164,7 @@ public class AdmPersistenciaTurnos {
 				itemAgenda.setApellido(result.getString(5));
 				itemAgenda.setNombre(result.getString(6));
 				itemAgenda.setDNI(result.getInt(7));
+				itemAgenda.setEstado(result.getInt(8));
 				lista.add(itemAgenda);
 			}
 			PoolConexiones.getInstancia().realeaseConnection(cnx);

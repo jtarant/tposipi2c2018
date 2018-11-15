@@ -30,12 +30,12 @@ public class AdminTurnos {
 		return instancia;
 	}
 	
-	public void reservar(int idPaciente, int idProfesional, Date fechaHoraInicio) throws Exception
+	public int reservar(int idPaciente, int idProfesional, Date fechaHoraInicio) throws Exception
 	{
-		this.reservar(idPaciente, idProfesional, fechaHoraInicio, null);
+		return this.reservar(idPaciente, idProfesional, fechaHoraInicio, null);
 	}
 
-	public void reservar(int idPaciente, int idProfesional, Date fechaHoraInicio, Integer idReglaOrigen) throws Exception
+	public int reservar(int idPaciente, int idProfesional, Date fechaHoraInicio, Integer idReglaOrigen) throws Exception
 	{
 		Paciente paciente = AdminPacientes.getInstancia().buscar(idPaciente);
 		if (paciente == null)
@@ -59,6 +59,7 @@ public class AdminTurnos {
 			nuevoTurno = new Turno(profesional, paciente, fechaHoraInicio, profesional.getDuracionTurno(), idReglaOrigen);
 		}
 		turnos.put(nuevoTurno.getId(), nuevoTurno);
+		return nuevoTurno.getId();
 	}
 	
 	private Turno buscar(int id) throws Exception

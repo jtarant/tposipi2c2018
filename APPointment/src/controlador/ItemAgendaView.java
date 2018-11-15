@@ -10,6 +10,7 @@ public class ItemAgendaView {
 	private String Apellido;
 	private String Nombre;
 	private int DNI;
+	private int estado;
 	
 	public int getIdTurno() {
 		return IdTurno;
@@ -53,5 +54,10 @@ public class ItemAgendaView {
 	public void setDNI(int dNI) {
 		DNI = dNI;
 	}
-	
+	public int getEstado() {
+		return estado;
+	}
+	public void setEstado(int estado) {
+		this.estado = estado;
+	}	
 }

@@ -91,8 +91,6 @@ public class VentanaPrincipal extends JFrame {
 
         JPanel weekControls = new JPanel();
         FlowLayout flowLayout = (FlowLayout) weekControls.getLayout();
-		
-
         getContentPane().add(weekControls, BorderLayout.NORTH);
         
         cboProfesionales = new JComboBox<IdNombreView>();
@@ -225,7 +223,7 @@ public class VentanaPrincipal extends JFrame {
 			AgendaView agenda = AdminTurnos.getInstancia().obtenerAgenda(desde, hasta, idNombreProfesional.getId());
 			for (ItemAgendaView item: agenda.getVistaTurnos())
 			{
-				eventos.add(crearEvento(item.getFechaHoraInicio(), item.getFechaHoraFin(), item.getApellido(), item.getNombre(), item.getDNI(), item.getIdTurno()));
+				eventos.add(crearEvento(item.getFechaHoraInicio(), item.getFechaHoraFin(), item.getApellido(), item.getNombre(), item.getDNI(), item.getIdTurno(), item.getEstado()));
 			}
 			calendario.setEvents(eventos);
 			
@@ -258,12 +256,12 @@ public class VentanaPrincipal extends JFrame {
 				int duracion = 60; // TODO: obtenerla del profesional
 				Date inicio = formTurno.getFechaHora();
 								
-				AdminTurnos.getInstancia().reservar(formTurno.getIDPaciente(), idNombreProfesional.getId(), inicio);
+				int idTurno = AdminTurnos.getInstancia().reservar(formTurno.getIDPaciente(), idNombreProfesional.getId(), inicio);
 				
 				java.util.Calendar cal = java.util.Calendar.getInstance();
 				cal.setTime(inicio);
 				cal.add(java.util.Calendar.MINUTE, duracion);
-				calendario.addEvent(crearEvento(inicio, cal.getTime(), formTurno.getApellido(), formTurno.getNombre(), formTurno.getDNI(), formTurno.getIDPaciente()));
+				calendario.addEvent(crearEvento(inicio, cal.getTime(), formTurno.getApellido(), formTurno.getNombre(), formTurno.getDNI(), idTurno, 0));
 			}
 			formTurno.dispose();
 		}
@@ -292,14 +290,15 @@ public class VentanaPrincipal extends JFrame {
 		cargarAgenda();
 	}
 	
-	private CalendarEvent crearEvento(Date fechaHoraInicio, Date fechaHoraFin, String apellido, String nombre, int DNI, int idTurno)
+	private CalendarEvent crearEvento(Date fechaHoraInicio, Date fechaHoraFin, String apellido, String nombre, int DNI, int idTurno, int estado)
 	{
 		String titulo = apellido + ", " + nombre;
 		if (DNI > 0) titulo = titulo + " DNI " + Integer.toString(DNI);
 		LocalDate ldInicio = fechaHoraInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		LocalTime ltInicio = fechaHoraInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
 		LocalTime ltFin = fechaHoraFin.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-		return new CalendarEvent(ldInicio, ltInicio, ltFin, titulo, new Color(194,205,248), idTurno);
+		Color color = (estado == 0)? new Color(194,205,248): Color.LIGHT_GRAY;
+		return new CalendarEvent(ldInicio, ltInicio, ltFin, titulo, color, idTurno);
 	}
 	
 	private void accionesEvento(CalendarEvent e)
@@ -338,7 +337,11 @@ public class VentanaPrincipal extends JFrame {
 			if (!form.getCancelado())
 			{
 				AdminTurnos.getInstancia().admitir(eventoSeleccionado.getID(), form.getItemsAdmision(), form.getImporteAbonado());
+				
+				CalendarEvent actualizado = new CalendarEvent(eventoSeleccionado.getDate(), eventoSeleccionado.getStart(), eventoSeleccionado.getEnd(), eventoSeleccionado.getText(), Color.LIGHT_GRAY, eventoSeleccionado.getID());
 				JOptionPane.showMessageDialog(null, "Admision realizada correctamente.", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+				calendario.removeEvent(eventoSeleccionado);
+				calendario.addEvent(actualizado);
 			}
 			form.dispose();
 		}
