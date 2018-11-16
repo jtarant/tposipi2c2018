@@ -3,11 +3,8 @@ package vista;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -17,19 +14,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
-
-import com.sun.javafx.font.freetype.FTFactory;
 
 import controlador.AdminPacientes;
 import controlador.AdminProfesionales;
 import controlador.AdminTurnos;
 import controlador.AlcanceCoberturaView;
 import controlador.CoberturaView;
-import controlador.IdNombreView;
 import controlador.ItemAdmisionView;
-import controlador.PacienteEncontradoView;
 import controlador.PacienteView;
 import controlador.PrestacionView;
 import controlador.ProfesionalView;
@@ -43,10 +35,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.JFormattedTextField;
@@ -139,6 +128,7 @@ public class DatosAdmision extends JDialog {
 		scrollpane.setBounds(15, 266, 703, 132);
 		tblAdmision.getTableHeader().setReorderingAllowed(false);
 		tblAdmision.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent event) {
 				if (tblAdmision.getSelectedRow() != -1)
 				{
@@ -154,6 +144,7 @@ public class DatosAdmision extends JDialog {
 		
 		JButton btnAgregar = new JButton("+");
 		btnAgregar.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				agregarItem();
 			}
@@ -180,6 +171,7 @@ public class DatosAdmision extends JDialog {
 		btnQuitar = new JButton("-");
 		btnQuitar.setEnabled(false);
 		btnQuitar.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 		    	eliminarItem((int)tblAdmision.getValueAt(tblAdmision.getSelectedRow(), 0));				
 			}
@@ -205,6 +197,7 @@ public class DatosAdmision extends JDialog {
 			{
 				okButton = new JButton("Aceptar");
 				okButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent arg0) 
 					{
 						if (!ValidadorTexto.esMonedaValida(ftfAbonado.getText()))
@@ -224,6 +217,7 @@ public class DatosAdmision extends JDialog {
 			{
 				JButton cancelButton = new JButton("Cancelar");
 				cancelButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						cancelado = true;
 						setVisible(false);

@@ -6,12 +6,16 @@ import java.awt.FlowLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controlador.AdminObrasSociales;
 import controlador.AdminProfesionales;
+import controlador.AdminTurnos;
 import controlador.IdNombreView;
+import modelo.ExceptionDeNegocio;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -29,6 +33,8 @@ public class Facturacion extends JDialog {
 	private BuscarPacientePanel pnlBuscarPaciente;
 	private JComboBox<IdNombreView> cboProfesionales;
 	private JComboBox<IdNombreView> cboObrasSociales;
+	private JSpinner spMes;
+	private JSpinner spAnio;
 	private IdNombreView idNombreProfesional;
 	private IdNombreView idNombreObraSocial;
 	
@@ -37,6 +43,7 @@ public class Facturacion extends JDialog {
 	 */
 	public Facturacion() {
 		setTitle("Generar reporte de facturacion");
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 816, 439);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -47,11 +54,11 @@ public class Facturacion extends JDialog {
 		lblMesao.setBounds(10, 21, 88, 14);
 		contentPanel.add(lblMesao);
 		
-		JSpinner spMes = new JSpinner(new SpinnerNumberModel(1, 1, 12, 1));
+		spMes = new JSpinner(new SpinnerNumberModel(1, 1, 12, 1));
 		spMes.setBounds(118, 18, 46, 20);
 		contentPanel.add(spMes);
 		
-		JSpinner spAnio = new JSpinner(new SpinnerNumberModel(2018, 2018, 2030, 1));
+		spAnio = new JSpinner(new SpinnerNumberModel(2018, 2018, 2030, 1));
 		spAnio.setBounds(169, 18, 71, 20);
 		contentPanel.add(spAnio);
 		
@@ -103,7 +110,9 @@ public class Facturacion extends JDialog {
 			{
 				JButton okButton = new JButton("Generar");
 				okButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent arg0) {
+						generarReporte();
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -112,6 +121,12 @@ public class Facturacion extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancelar");
+				cancelButton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						setVisible(false);
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
@@ -152,5 +167,38 @@ public class Facturacion extends JDialog {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error al cargar las obras sociales:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}				
-	}	
+	}
+	
+	private void generarReporte()
+	{
+		try
+		{
+			JFileChooser dlgGuardar = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivo Excel (*.xlsx)", "xlsx");
+			dlgGuardar.setFileFilter(filter);
+			
+			if (dlgGuardar.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) 
+			{
+			  String archivo = dlgGuardar.getSelectedFile().getAbsolutePath();
+			  if (!archivo.endsWith(".xlsx")) archivo += ".xlsx";
+			  
+			  Integer idPaciente = null;
+			  if (pnlBuscarPaciente.getIDSeleccionado() != -1)
+			  {
+				  idPaciente = pnlBuscarPaciente.getIDSeleccionado();
+			  }
+			  AdminTurnos.getInstancia().generarReporteFacturacion(archivo, (int)spMes.getValue(), (int)spAnio.getValue(), idNombreProfesional.getId(), idNombreObraSocial.getId(), idPaciente);
+			  JOptionPane.showMessageDialog(null, "Reporte generado correctamente.", "Informacion", JOptionPane.INFORMATION_MESSAGE);		  
+			}
+		}
+		catch (ExceptionDeNegocio en)
+		{
+			JOptionPane.showMessageDialog(null, en.getMessage(), "Informacion", JOptionPane.INFORMATION_MESSAGE);			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error al generar el reporte:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}						
+	}
 }

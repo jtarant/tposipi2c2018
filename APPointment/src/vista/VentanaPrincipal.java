@@ -162,6 +162,17 @@ public class VentanaPrincipal extends JFrame {
         JMenu mnFacturacion = new JMenu("Facturacion");
         menuBar.add(mnFacturacion);
         
+        JMenuItem mntmReporteDeFacturacion = new JMenuItem("Reporte de Facturacion");
+        mntmReporteDeFacturacion.addActionListener(new ActionListener() {
+        	@Override
+			public void actionPerformed(ActionEvent arg0) {
+        		Facturacion formFacturacion = new Facturacion();
+        		formFacturacion.setLocationRelativeTo(null);
+        		formFacturacion.setVisible(true);
+        	}
+        });
+        mnFacturacion.add(mntmReporteDeFacturacion);
+        
         JMenu mnPacientes = new JMenu("Pacientes");
         menuBar.add(mnPacientes);
         

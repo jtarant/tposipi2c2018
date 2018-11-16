@@ -10,6 +10,7 @@ import modelo.ExceptionDeNegocio;
 import modelo.NotificadorEmail;
 import modelo.Paciente;
 import modelo.Profesional;
+import modelo.ReporteFacturacion;
 import modelo.Seguridad;
 import modelo.Turno;
 import persistencia.AdmPersistenciaTurnos;
@@ -154,6 +155,24 @@ public class AdminTurnos {
 	public Boolean existenTurnosGenerados(Date desde, Date hasta, int idProfesional) throws Exception
 	{
 		return AdmPersistenciaTurnos.getInstancia().existenTurnosGenerados(desde,hasta,idProfesional);
+	}
+	
+	public void generarReporteFacturacion(String archivo, int mes, int anio, int idProfesional, int idObraSocial, Integer idPaciente) throws Exception
+	{
+		Profesional profesional = AdminProfesionales.getInstancia().buscar(idProfesional);
+		if (profesional == null)
+			throw new ExceptionDeNegocio("El profesional especificado no existe: id=" + Integer.toString(idProfesional));
+		
+		Paciente paciente = null;
+		if (idPaciente != null)
+		{
+			paciente = AdminPacientes.getInstancia().buscar(idPaciente);
+			if (paciente == null)
+				throw new ExceptionDeNegocio("El paciente especificado no existe: id=" + Integer.toString(idPaciente));
+		}
+		
+		ReporteFacturacion reporte = new ReporteFacturacion(archivo, mes, anio, profesional, idObraSocial, paciente);
+		reporte.guardar();
 	}
 	
 	public void limpiarCache()

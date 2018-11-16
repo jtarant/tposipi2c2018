@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLType;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -13,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import controlador.ItemAgendaView;
+import controlador.ItemReporteFacturacionView;
 import controlador.RecordarTurnoView;
 import modelo.DetalleAdmision;
 import modelo.EstadoTurno;
@@ -331,5 +331,71 @@ public class AdmPersistenciaTurnos {
 			cmdSql.setNull(3, java.sql.Types.INTEGER);
 		}
 		cmdSql.execute();
+	}
+	
+	public List<ItemReporteFacturacionView> obtenerReporteFacturacion(int mes, int anio, int idProfesional, int idObraSocial, Integer idPaciente) throws Exception
+	{
+		Connection cnx = null;
+		List<ItemReporteFacturacionView> rpt = new ArrayList<ItemReporteFacturacionView>();
+		try
+		{
+			cnx = PoolConexiones.getInstancia().getConnection();
+			
+			StringBuilder query = new StringBuilder("SELECT turno.id, fechaHoraInicio, fechaHoraFin, paciente.apellido, paciente.nombre, nroCredencial, codigo, descripcion, paciente.id ");
+			query.append("FROM Turno INNER JOIN Paciente ON turno.ID_Paciente=Paciente.ID ");
+			query.append("INNER JOIN Admision ON Admision.ID_Turno=turno.ID ");
+			query.append("INNER JOIN AdmisionDetalle ON AdmisionDetalle.ID_Admision=Admision.ID ");
+			query.append("INNER JOIN Cobertura ON AdmisionDetalle.ID_Cobertura=Cobertura.ID ");
+			query.append("INNER JOIN [Plan] ON Cobertura.ID_Plan=[Plan].ID ");
+			query.append("INNER JOIN ObraSocial ON [Plan].ID_ObraSocial=ObraSocial.ID ");
+			query.append("INNER JOIN Nomenclador ON ObraSocial.ID_Nomenclador=Nomenclador.ID ");
+			query.append("INNER JOIN Servicio ON AdmisionDetalle.ID_Servicio=Servicio.ID ");
+			query.append("INNER JOIN ServicioDetalle ON ServicioDetalle.ID_Servicio=Servicio.ID ");
+			query.append("INNER JOIN PracticaMedica ON ServicioDetalle.ID_Practica=PracticaMedica.ID AND PracticaMedica.ID_Nomenclador=Nomenclador.ID ");
+			query.append("WHERE turno.estado=1 AND ObraSocial.ID=? AND Turno.ID_Profesional=? ");
+			query.append("AND MONTH(fechaHoraInicio)=? AND YEAR(fechaHoraInicio)=? ");
+			if (idPaciente != null)
+			{
+				query.append("AND turno.ID_Paciente=? ");
+			}
+			query.append("ORDER BY fechaHoraInicio, paciente.apellido, paciente.nombre, paciente.id");
+
+			PreparedStatement cmdSql = cnx.prepareStatement(query.toString());
+			cmdSql.setInt(1, idObraSocial);
+			cmdSql.setInt(2, idProfesional);
+			cmdSql.setInt(3, mes);
+			cmdSql.setInt(4, anio);
+			if (idPaciente != null)
+			{
+				cmdSql.setInt(5, idPaciente);
+			}
+			ItemReporteFacturacionView item = null;
+
+			ResultSet result = cmdSql.executeQuery();
+			while (result.next())
+			{
+				int idTurno = result.getInt(1);			
+				Date fechaInicio = result.getTimestamp(2);
+				Date fechaFin = result.getTimestamp(3);
+				String apellido = result.getString(4);
+				String nombre = result.getString(5);
+				String nroCredencial = result.getString(6);
+				String codigo = result.getString(7);
+				String descripcion = result.getString(8);
+				item = new ItemReporteFacturacionView(fechaInicio, fechaFin, nombre, apellido, nroCredencial, codigo, descripcion);
+				rpt.add(item);
+			}
+			PoolConexiones.getInstancia().realeaseConnection(cnx);
+			return rpt;
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw e;
+		}				
+		finally
+		{
+			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
+		}		
 	}
 }
