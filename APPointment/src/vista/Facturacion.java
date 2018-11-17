@@ -42,6 +42,7 @@ public class Facturacion extends JDialog {
 	 * Create the dialog.
 	 */
 	public Facturacion() {
+		setModal(true);
 		setTitle("Generar reporte de facturacion");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 816, 439);
