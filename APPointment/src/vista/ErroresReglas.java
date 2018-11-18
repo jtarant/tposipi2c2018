@@ -15,6 +15,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.ErrorTurnoView;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ErroresReglas extends JDialog {
 
@@ -37,6 +39,11 @@ public class ErroresReglas extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton cancelButton = new JButton("Cerrar");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						setVisible(false);
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
@@ -51,7 +58,7 @@ public class ErroresReglas extends JDialog {
 		scrollpane.add(tblResultados.getTableHeader());
 		scrollpane.setBounds(0, 42, 667, 176);
 		tblResultados.getTableHeader().setReorderingAllowed(false);
-		add(scrollpane);
+		getContentPane().add(scrollpane);
 		
 		llenarGrilla(errores);
 	}
