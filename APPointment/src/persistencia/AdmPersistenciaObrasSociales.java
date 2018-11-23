@@ -8,6 +8,7 @@ import java.util.List;
 
 import controlador.IdNombreView;
 import modelo.AlcanceCobertura;
+import modelo.ObraSocial;
 import modelo.Servicio;
 
 public class AdmPersistenciaObrasSociales 
@@ -85,5 +86,39 @@ public class AdmPersistenciaObrasSociales
 		{
 			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
 		}
-	}	
+	}
+
+	public ObraSocial buscar(int id) throws Exception
+	{
+		Connection cnx = null;
+		ObraSocial os = null;
+		try
+		{
+			cnx = PoolConexiones.getInstancia().getConnection();
+			PreparedStatement cmdSql = cnx.prepareStatement("SELECT obrasocial.nombre,telefonoPrestadores,direccionFacturacion,email,activo,nomenclador.nombre FROM ObraSocial INNER JOIN Nomenclador ON ObraSocial.ID_Nomenclador=Nomenclador.ID WHERE ObraSocial.ID=?");
+			cmdSql.setInt(1, id);
+			ResultSet result = cmdSql.executeQuery();
+			if (result.next())
+			{
+				String nombre = result.getString(1);
+				String telefonoPrestadores = result.getString(2);
+				String direccionFacturacion = result.getString(3);
+				String email = result.getString(4);
+				Boolean activo = result.getBoolean(5);
+				String nomenclador = result.getString(6);
+				os = new ObraSocial(id, nombre, telefonoPrestadores, direccionFacturacion, email, activo, nomenclador);
+			}
+			PoolConexiones.getInstancia().realeaseConnection(cnx);
+			return os;
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw e;
+		}		
+		finally
+		{
+			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
+		}		
+	}
 }

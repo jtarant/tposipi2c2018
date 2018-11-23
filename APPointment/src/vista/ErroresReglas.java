@@ -40,6 +40,7 @@ public class ErroresReglas extends JDialog {
 			{
 				JButton cancelButton = new JButton("Cerrar");
 				cancelButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						setVisible(false);
 					}

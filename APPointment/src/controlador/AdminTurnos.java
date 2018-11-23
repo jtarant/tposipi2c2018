@@ -8,6 +8,7 @@ import modelo.EmailRecordatorioTurno;
 import modelo.EstadoTurno;
 import modelo.ExceptionDeNegocio;
 import modelo.NotificadorEmail;
+import modelo.ObraSocial;
 import modelo.Paciente;
 import modelo.Profesional;
 import modelo.ReporteFacturacion;
@@ -163,6 +164,10 @@ public class AdminTurnos {
 		if (profesional == null)
 			throw new ExceptionDeNegocio("El profesional especificado no existe: id=" + Integer.toString(idProfesional));
 		
+		ObraSocial os = AdminObrasSociales.getInstancia().buscar(idObraSocial);
+		if (os == null)
+			throw new ExceptionDeNegocio("La obra social especificada no existe: id=" + Integer.toString(idObraSocial));
+		
 		Paciente paciente = null;
 		if (idPaciente != null)
 		{
@@ -170,8 +175,8 @@ public class AdminTurnos {
 			if (paciente == null)
 				throw new ExceptionDeNegocio("El paciente especificado no existe: id=" + Integer.toString(idPaciente));
 		}
-		
-		ReporteFacturacion reporte = new ReporteFacturacion(archivo, mes, anio, profesional, idObraSocial, paciente);
+				
+		ReporteFacturacion reporte = new ReporteFacturacion(archivo, mes, anio, profesional, os, paciente);
 		reporte.guardar();
 	}
 	

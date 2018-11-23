@@ -9,6 +9,9 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -23,22 +26,22 @@ public class ReporteFacturacion
 	private int mes;
 	private int anio;
 	private Profesional profesional;
-	private int idObraSocial;
+	private ObraSocial obraSocial;
 	private Paciente paciente;
 	private List<ItemReporteFacturacionView> items;
 	private Workbook workbook;
 
-	public ReporteFacturacion(String nombreArchivo, int mes, int anio, Profesional profesional, int idObraSocial,
+	public ReporteFacturacion(String nombreArchivo, int mes, int anio, Profesional profesional, ObraSocial os,
 			Paciente paciente) throws Exception {
 		this.nombreArchivo = nombreArchivo;
 		this.mes = mes;
 		this.anio = anio;
 		this.profesional = profesional;
-		this.idObraSocial = idObraSocial;
+		this.obraSocial = os;
 		this.paciente = paciente;
 		
 		Integer idPaciente = (paciente != null)? paciente.getId(): null;
-		items = AdmPersistenciaTurnos.getInstancia().obtenerReporteFacturacion(mes, anio, profesional.getId(), idObraSocial, idPaciente);
+		items = AdmPersistenciaTurnos.getInstancia().obtenerReporteFacturacion(mes, anio, profesional.getId(), os.getId(), idPaciente);
 		if (items.size() == 0)
 			throw new ExceptionDeNegocio("No hay admisiones para los parametros seleccionados.");
 
@@ -55,7 +58,7 @@ public class ReporteFacturacion
 		fila1.createCell(1).setCellValue(Integer.toString(mes) + "/" + Integer.toString(anio));
 		Row fila2 = hoja1.createRow(1);
 		fila2.createCell(0).setCellValue("Obra Social");
-		fila2.createCell(1).setCellValue(""); // TODO: Agregar nombre de la obra social
+		fila2.createCell(1).setCellValue(obraSocial.getNombre());
 		Row fila3 = hoja1.createRow(2);
 		fila3.createCell(0).setCellValue("Profesional");
 		fila3.createCell(1).setCellValue(profesional.getApellido() + ", " + profesional.getNombre());
@@ -83,6 +86,16 @@ public class ReporteFacturacion
 		titulosHoja2.createCell(5).setCellValue("Credencial");
 		titulosHoja2.createCell(6).setCellValue("Practica Medica");
 		titulosHoja2.createCell(7).setCellValue("Descripcion");
+		CellStyle estiloTitulo = workbook.createCellStyle();
+		estiloTitulo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		estiloTitulo.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+		Font fontTitulo = workbook.createFont();
+		fontTitulo.setBold(true);
+		fontTitulo.setColor(IndexedColors.WHITE.getIndex());
+		estiloTitulo.setFont(fontTitulo);
+		for (int i = 0; i < 8; i++) {
+			titulosHoja2.getCell(i).setCellStyle(estiloTitulo);
+		}
 		
 		int i = 1;
 		Row filaHoja2;
@@ -102,11 +115,12 @@ public class ReporteFacturacion
 			filaHoja2.createCell(7).setCellValue(item.getDescripcionPractica());
 			i++;
 		}
-		hoja2.autoSizeColumn(0);
-		hoja2.autoSizeColumn(3);
-		hoja2.autoSizeColumn(5);
-		hoja2.autoSizeColumn(6);
+		
+		for (int i2 = 0; i2 < 8; i2++) {
+			hoja2.autoSizeColumn(i2);
+		}
 	}
+	
 
 	public void guardar() throws IOException
 	{
