@@ -113,7 +113,10 @@ public class Turno
 
 	public void cancelar() throws Exception
 	{
-		AdmPersistenciaTurnos.getInstancia().anular(getId());
+		if (getEstado() == EstadoTurno.CERRADO)
+			throw new ExceptionDeNegocio("No se puede anular este turno porque ya fue cerrado.");
+		else
+			AdmPersistenciaTurnos.getInstancia().anular(getId());
 	}
 	
 	public void admitir(List<ItemAdmisionView> items, float importeAbonado) throws Exception 
