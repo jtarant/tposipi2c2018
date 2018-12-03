@@ -1,35 +1,22 @@
-package modelo;
+package controlador;
 
-import controlador.IdNombreView;
-import controlador.UsuarioEmailNombreView;
-import persistencia.AdmPersistenciaUsuarios;
-
-public class Usuario {	
-	private int idUsuario;
+public class UsuarioView {
+	
 	private String nombre;
 	private String apellido;
 	private String contrasena;
 	private String email;
 	private String rol;
-	private Boolean activo;
+	private boolean activo;
 	
-	public Usuario(int id, String nombre, String apellido, String contrasena, String email, String rol, Boolean activo) 
-	{
-		this.idUsuario = id;
+	public UsuarioView(String nombre, String apellido, String contrasena, String email, String rol, boolean activo) {
+		super();
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.contrasena = contrasena;
 		this.email = email;
 		this.rol = rol;
 		this.activo = activo;
-	}
-
-	public int getIdUsuario() {
-		return idUsuario;
-	}
-
-	public void setIdUsuario(int idUsuario) {
-		this.idUsuario = idUsuario;
 	}
 
 	public String getNombre() {
@@ -80,21 +67,4 @@ public class Usuario {
 		this.activo = activo;
 	}
 	
-	public IdNombreView getIdNombreView()
-	{
-		IdNombreView idNombre = new IdNombreView();
-		idNombre.setId(getIdUsuario());
-		idNombre.setNombre(getApellido() + ", " + getNombre());
-		return idNombre;
-	}
-		
-	public UsuarioEmailNombreView getEmailNombreView()
-	{
-		return new UsuarioEmailNombreView(getEmail(),getNombre(),getApellido());
-	}
-	
-	public void actualizar() throws Exception 
-	{
-		AdmPersistenciaUsuarios.getInstancia().modificar(this);
-	}
 }

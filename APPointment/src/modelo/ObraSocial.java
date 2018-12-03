@@ -1,5 +1,6 @@
 package modelo;
 
+import controlador.ObraSocialView;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class ObraSocial 
@@ -89,5 +90,10 @@ public class ObraSocial
 	{
 		// RELEASE 3
 		throw new NotImplementedException();		
+	}
+
+	public ObraSocialView getView() 
+	{	
+		return new ObraSocialView(getId(),getNombre(),getTelefonoPrestadores(),getDireccionFacturacion(),getEmail(),getActivo(),getNomenclador());
 	}
 }

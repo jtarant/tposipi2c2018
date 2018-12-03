@@ -8,14 +8,14 @@ public class PacienteView
 	private int id;
 	private String apellido;
 	private String nombre;
-	private int DNI;
+	private Integer DNI;
 	private Date fechaNacimiento;
 	private String telefono;
 	private String email;
 	private Boolean activo;
 	private List<CoberturaView> coberturas;
 	
-	public PacienteView(int id, String apellido, String nombre, int dNI, Date fechaNacimiento, String telefono,
+	public PacienteView(int id, String apellido, String nombre, Integer dNI, Date fechaNacimiento, String telefono,
 			String email, Boolean activo, List<CoberturaView> coberturas) {
 		this.id = id;
 		this.apellido = apellido;
@@ -40,7 +40,7 @@ public class PacienteView
 		return nombre;
 	}
 
-	public int getDNI() {
+	public Integer getDNI() {
 		return DNI;
 	}
 

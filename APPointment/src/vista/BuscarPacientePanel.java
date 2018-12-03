@@ -88,6 +88,7 @@ public class BuscarPacientePanel extends JPanel {
 			fila[1] = p.getApellido();
 			fila[2] = p.getNombre();
 			fila[3] = p.getDNI();
+			fila[4] = p.getTelefono();
 			model.addRow(fila);
 		}
 		tblResultados.setModel(model);

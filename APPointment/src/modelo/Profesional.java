@@ -20,6 +20,7 @@ public class Profesional extends Usuario
 
 	public Profesional(int id, String especialidad, int duracionTurno, String telefono, Boolean activo, List<Prestacion> prestaciones)
 	{
+		super(0,null,null,null,null,null,null); // RELEASE 2 
 		this.setId(id);
 		this.setEspecialidad(especialidad);
 		this.setDuracionTurno(duracionTurno);
@@ -83,6 +84,7 @@ public class Profesional extends Usuario
 		return null;
 	}
 	
+	@Override
 	public void actualizar()
 	{
 		// RELEASE 2

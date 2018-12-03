@@ -9,6 +9,7 @@ import java.util.List;
 import controlador.IdNombreView;
 import modelo.AlcanceCobertura;
 import modelo.ObraSocial;
+import modelo.Plan;
 import modelo.Servicio;
 
 public class AdmPersistenciaObrasSociales 
@@ -87,6 +88,34 @@ public class AdmPersistenciaObrasSociales
 			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
 		}
 	}
+	
+	public List<IdNombreView> listarPlanesPorIdNombre(int idObraSocial) throws Exception
+	{
+		Connection cnx = null;
+		List<IdNombreView> lista = new ArrayList<IdNombreView>();
+		try
+		{
+			cnx = PoolConexiones.getInstancia().getConnection();
+			PreparedStatement cmdSql = cnx.prepareStatement("SELECT ID, nombre FROM [Plan] WHERE ID_ObraSocial=? AND activo=1");
+			cmdSql.setInt(1, idObraSocial);
+			ResultSet result = cmdSql.executeQuery();
+			while (result.next())
+			{
+				lista.add(new IdNombreView(result.getInt(1), result.getString(2)));
+			}
+			PoolConexiones.getInstancia().realeaseConnection(cnx);
+			return lista;
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw e;
+		}				
+		finally
+		{
+			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
+		}
+	}
 
 	public ObraSocial buscar(int id) throws Exception
 	{
@@ -110,6 +139,34 @@ public class AdmPersistenciaObrasSociales
 			}
 			PoolConexiones.getInstancia().realeaseConnection(cnx);
 			return os;
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw e;
+		}		
+		finally
+		{
+			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
+		}		
+	}
+
+	public Plan obtenerPlan(int id) throws Exception 
+	{
+		Connection cnx = null;
+		Plan plan = null;
+		try
+		{
+			cnx = PoolConexiones.getInstancia().getConnection();
+			PreparedStatement cmdSql = cnx.prepareStatement("SELECT id,nombre,activo,ID_ObraSocial FROM [Plan] WHERE [Plan].ID=?");
+			cmdSql.setInt(1, id);
+			ResultSet result = cmdSql.executeQuery();
+			if (result.next())
+			{
+				plan = new Plan(result.getInt(1), result.getString(2), result.getInt(4));
+			}
+			PoolConexiones.getInstancia().realeaseConnection(cnx);
+			return plan;
 		}
 		catch (Exception e)
 		{

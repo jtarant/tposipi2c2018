@@ -5,6 +5,7 @@ public class PacienteEncontradoView {
 	private String apellido;
 	private String nombre;
 	private int DNI;
+	private String telefono;
 	
 	public int getId() {
 		return id;
@@ -29,5 +30,11 @@ public class PacienteEncontradoView {
 	}
 	public void setDNI(int dNI) {
 		DNI = dNI;
+	}
+	public String getTelefono() {
+		return telefono;
+	}
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
 	}
 }

@@ -32,6 +32,6 @@ public class CoberturaView
 
 	@Override
 	public String toString() {
-		return getNumeroCredencial() + "Plan: " + getPlan().getNombre();
+		return getNumeroCredencial() + " Plan: " + getPlan().getNombre();
 	}
 }

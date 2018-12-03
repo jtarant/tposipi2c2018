@@ -20,11 +20,13 @@ import com.davidmoodie.SwingCalendar.Calendar;
 import com.davidmoodie.SwingCalendar.CalendarEvent;
 import com.davidmoodie.SwingCalendar.WeekCalendar;
 
+import controlador.AdminPacientes;
 import controlador.AdminProfesionales;
 import controlador.AdminTurnos;
 import controlador.AgendaView;
 import controlador.IdNombreView;
 import controlador.ItemAgendaView;
+import controlador.PacienteView;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -175,6 +177,25 @@ public class VentanaPrincipal extends JFrame {
         
         JMenu mnPacientes = new JMenu("Pacientes");
         menuBar.add(mnPacientes);
+        
+        JMenuItem mntmAdministradorDePacientes = new JMenuItem("Administrador de Pacientes");
+        mntmAdministradorDePacientes.addActionListener(new ActionListener() {
+        	@Override
+			public void actionPerformed(ActionEvent arg0) {
+        		// TODO: Aca va el admin de pacientes, quitar esta prueba
+        		PacienteView pv = null;
+        		try {
+					pv = AdminPacientes.getInstancia().obtener(3);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+        		DatosPaciente formPaciente = new DatosPaciente();
+        		formPaciente.setLocationRelativeTo(null);
+        		formPaciente.setPaciente(pv);
+        		formPaciente.setVisible(true);
+        	}
+        });
+        mnPacientes.add(mntmAdministradorDePacientes);
         
         JMenu mnProfesionales = new JMenu("Profesionales");
         menuBar.add(mnProfesionales);

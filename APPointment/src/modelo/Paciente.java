@@ -5,28 +5,41 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import controlador.AdminObrasSociales;
 import controlador.CoberturaView;
 import controlador.IdNombreView;
+import controlador.ItemCoberturaView;
 import controlador.PacienteView;
+import persistencia.AdmPersistenciaPacientes;
 
 public class Paciente 
 {
 	private int id;
 	private String apellido;
 	private String nombre;
-	private int DNI;
+	private Integer DNI;
 	private Date fechaNacimiento;
 	private String telefono;
 	private String email;
 	private Boolean activo;
 	private List<Cobertura> coberturas;
+	private List<Cobertura> nuevos;
+	private List<Cobertura> eliminados;
 
-	public Paciente(String apellido, String nombre, int DNI, Date fechaNacimiento, String telefono, String email, Boolean activo, List<Cobertura> coberturas)
+	public Paciente(String apellido, String nombre, Integer DNI, Date fechaNacimiento, String telefono, String email, Boolean activo, List<Cobertura> coberturas) throws Exception
 	{
-		// TODO: implementar. hace el insert
+		this.setApellido(apellido);
+		this.setNombre(nombre);
+		this.setDNI(DNI);
+		this.setFechaNacimiento(fechaNacimiento);
+		this.setTelefono(telefono);
+		this.setEmail(email);
+		this.setActivo(activo);
+		this.setCoberturas(coberturas);
+		AdmPersistenciaPacientes.getInstancia().insertar(this);
 	}
 	
-	public Paciente(int id, String apellido, String nombre, int DNI, Date fechaNacimiento, String telefono, String email, Boolean activo, List<Cobertura> coberturas)
+	public Paciente(int id, String apellido, String nombre, Integer DNI, Date fechaNacimiento, String telefono, String email, Boolean activo, List<Cobertura> coberturas)
 	{
 		this.setId(id);
 		this.setApellido(apellido);
@@ -65,7 +78,7 @@ public class Paciente
 			this.nombre = nombre.trim().toUpperCase();
 	}
 
-	public int getDNI() {
+	public Integer getDNI() {
 		return DNI;
 	}
 
@@ -86,7 +99,8 @@ public class Paciente
 	}
 
 	public void setTelefono(String telefono) {
-		this.telefono = telefono;
+		if (telefono != null)
+			this.telefono = telefono.trim();
 	}
 
 	public String getEmail() {
@@ -95,7 +109,7 @@ public class Paciente
 
 	public void setEmail(String email) {
 		if (email != null)
-			this.email = email.toLowerCase();
+			this.email = email.trim().toLowerCase();
 	}
 
 	public Boolean getActivo() {
@@ -125,14 +139,53 @@ public class Paciente
 		this.coberturas = coberturas;
 	}
 	
-	public void actualizar()
+	public void setCambiosCoberturas(List<ItemCoberturaView> items) throws Exception
 	{
-		// TODO: implementar
+		this.nuevos = new ArrayList<Cobertura>();
+		this.eliminados = new ArrayList<Cobertura>();
+		
+		// Eliminados: los que tenia que ahora no estan
+		for	(Cobertura c : getCoberturas())
+		{
+			Boolean encontrado = false;
+			int i = 0;
+			while (i < items.size() && !encontrado) 
+			{
+				ItemCoberturaView item = items.get(i);
+				if ((item.getNroCredencial().equals(c.getNumeroCredencial())) && (item.getIdPlan() == c.getPlan().getId()))
+					encontrado = true;
+				i++;
+			}
+			if (!encontrado)
+			{
+				this.eliminados.add(c);
+			}
+		}
+
+		// Nuevos: los que no tienen id asignado
+		for (ItemCoberturaView item : items) 
+		{
+			if (item.getId() <= 0)
+			{
+				Plan plan = AdminObrasSociales.getInstancia().obtenerPlan(item.getIdPlan());
+				Cobertura cobertura = new Cobertura(item.getNroCredencial(), item.getPrimaria(), plan);
+				this.nuevos.add(cobertura);
+			}
+		}
 	}
 	
-	public void eliminar()
+	public void actualizar() throws Exception
 	{
-		// TODO: implementar
+		AdmPersistenciaPacientes.getInstancia().modificar(this);
+		this.coberturas.addAll(nuevos);
+		this.coberturas.removeAll(eliminados);
+		this.nuevos = null;
+		this.eliminados = null;
+	}
+	
+	public void eliminar() throws Exception
+	{
+		AdmPersistenciaPacientes.getInstancia().eliminar(this);
 	}
 
 	public IdNombreView getIdNombreView()
@@ -149,5 +202,13 @@ public class Paciente
 		for (Cobertura c : getCoberturas())
 			cv.add(c.getView());
 		return new PacienteView(getId(),getApellido(),getNombre(),getDNI(),getFechaNacimiento(),getTelefono(),getEmail(),getActivo(),cv);
+	}
+
+	public List<Cobertura> getNuevos() {
+		return nuevos;
+	}
+
+	public List<Cobertura> getEliminados() {
+		return eliminados;
 	}
 }
