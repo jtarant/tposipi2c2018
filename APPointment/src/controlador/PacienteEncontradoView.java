@@ -6,6 +6,7 @@ public class PacienteEncontradoView {
 	private String nombre;
 	private int DNI;
 	private String telefono;
+	private boolean activo;
 	
 	public int getId() {
 		return id;
@@ -36,5 +37,11 @@ public class PacienteEncontradoView {
 	}
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
+	}
+	public boolean getActivo() {
+		return activo;
+	}
+	public void setActivo(boolean activo) {
+		this.activo = activo;
 	}
 }

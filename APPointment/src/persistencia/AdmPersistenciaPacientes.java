@@ -37,7 +37,7 @@ public class AdmPersistenciaPacientes {
 		{
 			cnx = PoolConexiones.getInstancia().getConnection();
 
-			PreparedStatement cmdSql = cnx.prepareStatement("SELECT Id,apellido,nombre,DNI,Telefono FROM Paciente WHERE apellido LIKE ?");
+			PreparedStatement cmdSql = cnx.prepareStatement("SELECT Id,apellido,nombre,DNI,Telefono,activo FROM Paciente WHERE apellido LIKE ?");
 			cmdSql.setString(1, '%' + apellido + '%');
 			
 			ResultSet result = cmdSql.executeQuery();
@@ -49,6 +49,7 @@ public class AdmPersistenciaPacientes {
 				pac.setNombre(result.getString(3));
 				pac.setDNI(result.getInt(4));
 				pac.setTelefono(result.getString(5));
+				pac.setActivo(result.getBoolean(6));
 				lista.add(pac);
 			}
 			PoolConexiones.getInstancia().realeaseConnection(cnx);
@@ -108,12 +109,12 @@ public class AdmPersistenciaPacientes {
 		StringBuilder sql = new StringBuilder("SELECT cobertura.ID AS ID_Cobertura,[plan].ID AS ID_Plan,[Plan].nombre AS NombrePlan, nroCredencial, primaria, ID_ObraSocial FROM Cobertura ");
 		sql.append("INNER JOIN dbo.[Plan] ON Cobertura.ID_Plan=dbo.[Plan].ID ");
 		sql.append("INNER JOIN ObraSocial ON [Plan].ID_ObraSocial=ObraSocial.ID ");
-		sql.append("WHERE dbo.[Plan].activo=1 AND Cobertura.activa=1 AND ID_Paciente=? ORDER BY primaria");
+		sql.append("WHERE dbo.[Plan].activo=1 AND Cobertura.activa=1 AND ID_Paciente=? ORDER BY primaria DESC, nroCredencial ASC");
 		PreparedStatement cmdSql = cnx.prepareStatement(sql.toString());
 		cmdSql.setInt(1, idPaciente);
 		ResultSet result = cmdSql.executeQuery();
 		
-		if (result.next())
+		while (result.next())
 		{
 			Plan plan = new Plan(result.getInt(2), result.getString(3), result.getInt(6));
 			Cobertura c = new Cobertura(result.getInt(1), result.getString(4), result.getBoolean(5), plan);
@@ -215,6 +216,16 @@ public class AdmPersistenciaPacientes {
 			{
 				eliminarCobertura(eliminada, cnx);
 			}
+			
+			List<Cobertura> listaFinal = new ArrayList<Cobertura>(paciente.getCoberturas());
+			listaFinal.removeAll(paciente.getEliminados());
+			listaFinal.addAll(paciente.getNuevos());
+			listaFinal.removeIf(c -> !c.getPrimaria());
+			if (listaFinal.size() != 0)
+			{
+				Cobertura nuevaPrimaria = listaFinal.get(0);
+				actualizarCoberturaPrimaria(paciente.getId(), nuevaPrimaria, cnx);
+			}
 			cnx.commit();
 		}
 		catch (Exception e)
@@ -229,6 +240,17 @@ public class AdmPersistenciaPacientes {
 		}
 	}
 
+	private void actualizarCoberturaPrimaria(int idPaciente, Cobertura cobertura, Connection cnx) throws SQLException
+	{
+		PreparedStatement cmdSqlPri = cnx.prepareStatement("UPDATE Cobertura SET primaria=1 WHERE ID=?");
+		cmdSqlPri.setInt(1, cobertura.getId());
+		cmdSqlPri.execute();
+		PreparedStatement cmdSqlnoP = cnx.prepareStatement("UPDATE Cobertura SET primaria=0 WHERE ID_Paciente=? AND ID<>?");
+		cmdSqlnoP.setInt(1, idPaciente);
+		cmdSqlnoP.setInt(2, cobertura.getId());
+		cmdSqlnoP.execute();
+	}
+	
 	public void eliminar(Paciente paciente) throws Exception 
 	{
 		Connection cnx = null;

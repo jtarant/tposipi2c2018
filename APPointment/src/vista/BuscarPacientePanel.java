@@ -9,7 +9,6 @@ import javax.swing.table.DefaultTableModel;
 
 import controlador.AdminPacientes;
 import controlador.PacienteEncontradoView;
-
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -20,6 +19,11 @@ import java.awt.event.ActionEvent;
 public class BuscarPacientePanel extends JPanel {
 	private JTextField txtBuscar;
 	private JTable tblResultados;
+	private boolean soloActivos;
+	
+	public JTable getTblResultados() {
+		return tblResultados;
+	}
 
 	/**
 	 * Create the panel.
@@ -63,14 +67,17 @@ public class BuscarPacientePanel extends JPanel {
 		JScrollPane scrollpane = new JScrollPane(tblResultados);
 		scrollpane.add(tblResultados.getTableHeader());
 		scrollpane.setBounds(0, 42, 667, 176);
+		
 		tblResultados.getTableHeader().setReorderingAllowed(false);
 		add(scrollpane);
+	
+		soloActivos = true;
 	}
 	
 	private void llenarGrilla() throws Exception
 	{
 		DefaultTableModel model = new DefaultTableModel();
-		Object[] fila = new Object[5];
+		Object[] fila = new Object[6];
 		
 		tblResultados.removeAll();
 		model.addColumn("ID");
@@ -78,10 +85,13 @@ public class BuscarPacientePanel extends JPanel {
 		model.addColumn("Nombre");
 		model.addColumn("DNI");
 		model.addColumn("Telefono");
-
+		if(!soloActivos) {
+			model.addColumn("Activo");
+		}
+		
 		List<PacienteEncontradoView> pacientes;
 		pacientes = AdminPacientes.getInstancia().buscarPorApellido(txtBuscar.getText());
-			
+		
 		for(PacienteEncontradoView p : pacientes) 
 		{
 			fila[0] = p.getId();
@@ -89,7 +99,15 @@ public class BuscarPacientePanel extends JPanel {
 			fila[2] = p.getNombre();
 			fila[3] = p.getDNI();
 			fila[4] = p.getTelefono();
-			model.addRow(fila);
+			if(soloActivos) {
+				if(p.getActivo()) {
+					model.addRow(fila);
+				}
+			}
+			else {
+				fila[5] = p.getActivo() ? "Si": "No";
+				model.addRow(fila);
+			}
 		}
 		tblResultados.setModel(model);
 		tblResultados.getColumnModel().getColumn(0).setWidth(0);
@@ -133,5 +151,11 @@ public class BuscarPacientePanel extends JPanel {
 	public void addSelectionListener(ListSelectionListener lsl)
 	{
 		tblResultados.getSelectionModel().addListSelectionListener(lsl);
+	}
+	public void actualizar() throws Exception {
+		llenarGrilla();
+	}
+	public void setSoloActivos(boolean soloActivos) {
+		this.soloActivos = soloActivos;
 	}
 }

@@ -1,15 +1,11 @@
 package vista;
 
-import java.awt.Color;
 import java.awt.Component;
-import javax.swing.AbstractCellEditor;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.text.MaskFormatter;
 
 import controlador.AdminPacientes;
@@ -32,6 +28,10 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.awt.event.ActionEvent;
+import javax.swing.JPopupMenu;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JMenuItem;
 
 public class DatosPaciente extends JDialog {
 	private Boolean modoEdicion;
@@ -121,7 +121,14 @@ public class DatosPaciente extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				guardar();
+				String msgErrorValidaciones = getValidacionesFallidas();
+				if (msgErrorValidaciones.length() > 0)
+					JOptionPane.showMessageDialog(null, msgErrorValidaciones);
+				else
+				{
+					cancelado = false;
+					setVisible(false);
+				}
 			}
 		});
 		
@@ -130,6 +137,7 @@ public class DatosPaciente extends JDialog {
 		btnCancelar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				cancelado = true;
 				setVisible(false);
 			}
 		});
@@ -160,6 +168,18 @@ public class DatosPaciente extends JDialog {
 		table.setDefaultEditor(Object.class, null);
 		table.setAutoscrolls(true);
 		JScrollPane scrollpane = new JScrollPane(table);
+		
+		JPopupMenu popupMenu = new JPopupMenu();
+		addPopup(table, popupMenu);
+		
+		JMenuItem mntmEstablecerComoPrimaria = new JMenuItem("Establecer como primaria");
+		mntmEstablecerComoPrimaria.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				establecerPrimaria(table.getValueAt(table.getSelectedRow(), 3).toString());					
+			}
+		});
+		popupMenu.add(mntmEstablecerComoPrimaria);
 		scrollpane.add(table.getTableHeader());
 		scrollpane.setBounds(15, 274, 474, 108);
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -189,6 +209,7 @@ public class DatosPaciente extends JDialog {
 		btnQuitar.setBounds(448, 245, 41, 23);
 		getContentPane().add(btnQuitar);
 		llenarGrilla();
+		cancelado = true;
 	}
 
 	public void setPaciente(PacienteView paciente)
@@ -199,7 +220,7 @@ public class DatosPaciente extends JDialog {
 		this.cbActivo.setEnabled(true);
 		this.txApellido.setText(paciente.getApellido());
 		this.txNombre.setText(paciente.getNombre());
-		this.txDNI.setText(paciente.getDNI()!=null? Integer.toString(paciente.getDNI()): "");
+		this.txDNI.setText(paciente.getDNI() != null ? Integer.toString(paciente.getDNI()): "");
 		this.frTxFechaNac.setText(new SimpleDateFormat("dd/MM/yyyy").format(paciente.getFechaNacimiento()));
 		this.txTelefono.setText(paciente.getTelefono());
 		this.txEmail.setText(paciente.getEmail());
@@ -207,8 +228,7 @@ public class DatosPaciente extends JDialog {
 		
 		for (CoberturaView cv : paciente.getCoberturas())
 		{
-			// TODO: quitar el estado activo del view, no lo necesito al final
-			ItemCoberturaView icv = new ItemCoberturaView(cv.getId(), cv.getPlan().getId(), cv.getNumeroCredencial(), true);
+			ItemCoberturaView icv = new ItemCoberturaView(cv.getId(), cv.getPlan().getId(), cv.getNumeroCredencial(), cv.getPrimaria());
 			icv.setNombrePlan(cv.getPlan().getNombre());
 			icv.setNombreObraSocial(cv.getPlan().getObraSocial().getNombre());
 			this.coberturas.put(icv.getNroCredencial(), icv);
@@ -246,8 +266,22 @@ public class DatosPaciente extends JDialog {
 		{
 			this.coberturas.remove(nroCredencial);
 		}
+		if (this.coberturas.size() == 1)
+			this.coberturas.get(table.getValueAt(0, 3).toString()).setPrimaria(true);
 		llenarGrilla();
-	}	
+	}
+	
+	private void establecerPrimaria(String nroCredencial)
+	{
+		for (ItemCoberturaView icv : this.coberturas.values())
+		{
+			if (icv.getNroCredencial().equals(nroCredencial))
+				icv.setPrimaria(true);
+			else
+				icv.setPrimaria(false);
+		}
+		llenarGrilla();		
+	}
 	
 	private void guardar()
 	{
@@ -310,6 +344,9 @@ public class DatosPaciente extends JDialog {
 			ic.setNombreObraSocial(formCobertura.getIdNombreObraSocial().getNombre());
 			ic.setNombrePlan(formCobertura.getIdNombrePlan().getNombre());
 			
+			if (this.coberturas.isEmpty()) 
+				ic.setPrimaria(true);
+			
 			this.coberturas.put(ic.getNroCredencial(), ic);
 			this.llenarGrilla();
 		}
@@ -343,26 +380,60 @@ public class DatosPaciente extends JDialog {
 		table.validate();
 	}
 	
-	private class CheckBoxCellEditor extends AbstractCellEditor implements TableCellEditor {
-        protected JCheckBox checkBox;
-         
-        public CheckBoxCellEditor() {
-            checkBox = new JCheckBox();
-            checkBox.setHorizontalAlignment(SwingConstants.CENTER);
-            checkBox.setBackground( Color.white);
-        }
+	public Boolean getCancelado() 
+	{
+		return cancelado;
+	}
 
-		@Override
-		public Object getCellEditorValue() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
-				int column) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+	public Integer getDNI() {
+		return txDNI.getText().trim().length() > 0? Integer.parseInt(txDNI.getText().trim()): null;
+	}
+	
+	public Date getFechaNac() throws ParseException {
+		return (new SimpleDateFormat("dd/MM/yyyy").parse(frTxFechaNac.getText()));
+	}
+	
+	public List<ItemCoberturaView> getItemsCobertura(){
+		return (new ArrayList<ItemCoberturaView>(coberturas.values()));
+	}
+	
+	public String getApellido() {
+		return txApellido.getText();
+	}
+	
+	public String getNombre() {
+		return txNombre.getText();
+	}
+	
+	public boolean getActivo() {
+		return cbActivo.isSelected();
+	}
+	
+	public String getEmail() {
+		return txEmail.getText();
+	}
+	
+	public String getTelefono() {
+		return txTelefono.getText();
+	}
+	private static void addPopup(Component component, final JPopupMenu popup) {
+		component.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+			private void showMenu(MouseEvent e) {
+				if (((JTable)e.getComponent()).getSelectedRowCount()!=0)
+					popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
 	}
 }

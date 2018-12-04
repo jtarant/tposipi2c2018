@@ -20,14 +20,11 @@ import com.davidmoodie.SwingCalendar.Calendar;
 import com.davidmoodie.SwingCalendar.CalendarEvent;
 import com.davidmoodie.SwingCalendar.WeekCalendar;
 
-import controlador.AdminPacientes;
 import controlador.AdminProfesionales;
 import controlador.AdminTurnos;
 import controlador.AgendaView;
 import controlador.IdNombreView;
 import controlador.ItemAgendaView;
-import controlador.PacienteView;
-
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -72,6 +69,7 @@ public class VentanaPrincipal extends JFrame {
 	public VentanaPrincipal() {
 		setTitle("APPointment");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
 
 		ArrayList<CalendarEvent> events = new ArrayList<>();
 		calendario = new WeekCalendar(events);
@@ -182,17 +180,10 @@ public class VentanaPrincipal extends JFrame {
         mntmAdministradorDePacientes.addActionListener(new ActionListener() {
         	@Override
 			public void actionPerformed(ActionEvent arg0) {
-        		// TODO: Aca va el admin de pacientes, quitar esta prueba
-        		PacienteView pv = null;
-        		try {
-					pv = AdminPacientes.getInstancia().obtener(3);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-        		DatosPaciente formPaciente = new DatosPaciente();
-        		formPaciente.setLocationRelativeTo(null);
-        		formPaciente.setPaciente(pv);
-        		formPaciente.setVisible(true);
+        		ABMPaciente formPacientes = new ABMPaciente();
+        		formPacientes.setLocationRelativeTo(null);
+        		formPacientes.setVisible(true);
+        		formPacientes.dispose();
         	}
         });
         mnPacientes.add(mntmAdministradorDePacientes);

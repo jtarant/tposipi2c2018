@@ -4,33 +4,27 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controlador.AdminObrasSociales;
-import controlador.CoberturaView;
 import controlador.IdNombreView;
-import controlador.PlanView;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JTextField;
-import javax.swing.JCheckBox;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.awt.event.ActionEvent;
 
-public class DatosCobertura extends JDialog {
-
+public class DatosCobertura extends JDialog 
+{
 	private JPanel contentPane;
 	private JTextField txNumeroSocio;
 	private JComboBox<IdNombreView> cboObraSocial;
 	private JComboBox<IdNombreView> cboPlan;
-	private CoberturaView cobertura;
 	private IdNombreView idNombreObraSocial;
 	private IdNombreView idNombrePlan;
-	private PlanView plan;
 	private Boolean cancelado;
-	private JCheckBox checkBoxPrimaria;
 
 	/**
 	 * Create the frame.
@@ -38,7 +32,7 @@ public class DatosCobertura extends JDialog {
 	public DatosCobertura() {
 		setTitle("Cobertura m\u00E9dica");
 		setModal(true);
-		setBounds(100, 100, 434, 256);
+		setBounds(100, 100, 434, 234);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -51,9 +45,6 @@ public class DatosCobertura extends JDialog {
 		
 		JLabel lblNmeroDeSocio = new JLabel("N\u00FAmero de socio");
 		lblNmeroDeSocio.setBounds(15, 89, 124, 14);
-		
-		JLabel lblPrimaria = new JLabel("Primaria");
-		lblPrimaria.setBounds(15, 117, 38, 14);
 		
 		cboObraSocial = new JComboBox<IdNombreView>();
 		cboObraSocial.setBounds(156, 24, 218, 20);
@@ -83,12 +74,9 @@ public class DatosCobertura extends JDialog {
 		txNumeroSocio.setBounds(156, 86, 218, 20);
 		txNumeroSocio.setColumns(19);
 		
-		checkBoxPrimaria = new JCheckBox("");
-		checkBoxPrimaria.setBounds(118, 117, 21, 21);
-		
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.setActionCommand("Cancel");
-		btnCancelar.setBounds(299, 172, 98, 23);
+		btnCancelar.setBounds(299, 138, 98, 23);
 		btnCancelar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -99,7 +87,7 @@ public class DatosCobertura extends JDialog {
 		
 		JButton btnAceptar = new JButton("Aceptar");
 		btnAceptar.setActionCommand("OK");
-		btnAceptar.setBounds(196, 172, 93, 23);
+		btnAceptar.setBounds(197, 138, 93, 23);
 		btnAceptar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {	
@@ -117,8 +105,6 @@ public class DatosCobertura extends JDialog {
 		contentPane.add(lblObraSocial);
 		contentPane.add(lblPlan);
 		contentPane.add(lblNmeroDeSocio);
-		contentPane.add(lblPrimaria);
-		contentPane.add(checkBoxPrimaria);
 		contentPane.add(txNumeroSocio);
 		contentPane.add(cboPlan);
 		contentPane.add(cboObraSocial);
@@ -129,7 +115,6 @@ public class DatosCobertura extends JDialog {
 		cancelado = true;
 	}
 	
-
 	private void cargarCoberturas()
 	{
 		try
@@ -177,9 +162,5 @@ public class DatosCobertura extends JDialog {
 
 	public IdNombreView getIdNombrePlan() {
 		return idNombrePlan;
-	}
-
-	public JCheckBox getPrimaria() {
-		return checkBoxPrimaria;
 	}
 }

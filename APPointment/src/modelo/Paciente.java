@@ -82,7 +82,7 @@ public class Paciente
 		return DNI;
 	}
 
-	public void setDNI(int dNI) {
+	public void setDNI(Integer dNI) {
 		DNI = dNI;
 	}
 

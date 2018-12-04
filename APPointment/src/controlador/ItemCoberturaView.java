@@ -6,7 +6,6 @@ public class ItemCoberturaView
 	private int idPlan;
 	private String nroCredencial;
 	private Boolean primaria;
-	private Boolean activa;
 	private String nombrePlan;
 	private String nombreObraSocial;
 	
@@ -17,13 +16,12 @@ public class ItemCoberturaView
 		this.primaria = false;
 	}
 	
-	public ItemCoberturaView(int id, int idPlan, String nroCredencial, Boolean activa)
+	public ItemCoberturaView(int id, int idPlan, String nroCredencial, Boolean primaria)
 	{
 		this.id = id;
 		this.idPlan = idPlan;
 		this.nroCredencial = nroCredencial;
-		this.activa = activa;
-		this.primaria = false;
+		this.primaria = primaria;
 	}
 	
 	public int getId()
@@ -41,14 +39,6 @@ public class ItemCoberturaView
 	
 	public void setPrimaria(Boolean primaria) {
 		this.primaria = primaria;
-	}
-
-	public Boolean getActiva() {
-		return activa;
-	}
-
-	public void setActiva(Boolean activa) {
-		this.activa = activa;
 	}
 
 	public Boolean getPrimaria() {
