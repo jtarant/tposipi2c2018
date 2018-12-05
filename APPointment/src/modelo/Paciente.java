@@ -25,6 +25,7 @@ public class Paciente
 	private List<Cobertura> coberturas;
 	private List<Cobertura> nuevos;
 	private List<Cobertura> eliminados;
+	private Cobertura nuevaPrimaria;
 
 	public Paciente(String apellido, String nombre, Integer DNI, Date fechaNacimiento, String telefono, String email, Boolean activo, List<Cobertura> coberturas) throws Exception
 	{
@@ -134,6 +135,17 @@ public class Paciente
 		}
 		return null;
 	}
+
+	public Cobertura obtenerCobertura(String nroCredencial)
+	{
+		Iterator<Cobertura> iterador = getCoberturas().iterator();
+		while (iterador.hasNext())
+		{
+			Cobertura c = iterador.next();
+			if (c.getNumeroCredencial().equalsIgnoreCase(nroCredencial)) return c;
+		}
+		return null;
+	}
 	
 	public void setCoberturas(List<Cobertura> coberturas) {
 		this.coberturas = coberturas;
@@ -143,6 +155,7 @@ public class Paciente
 	{
 		this.nuevos = new ArrayList<Cobertura>();
 		this.eliminados = new ArrayList<Cobertura>();
+		this.nuevaPrimaria = null;
 		
 		// Eliminados: los que tenia que ahora no estan
 		for	(Cobertura c : getCoberturas())
@@ -162,14 +175,20 @@ public class Paciente
 			}
 		}
 
-		// Nuevos: los que no tienen id asignado
 		for (ItemCoberturaView item : items) 
 		{
+			// Nuevos: los que no tienen id asignado
 			if (item.getId() <= 0)
 			{
 				Plan plan = AdminObrasSociales.getInstancia().obtenerPlan(item.getIdPlan());
 				Cobertura cobertura = new Cobertura(item.getNroCredencial(), item.getPrimaria(), plan);
 				this.nuevos.add(cobertura);
+				if (cobertura.getPrimaria()) nuevaPrimaria = cobertura;
+			}
+			// verificar la nueva primaria
+			if ((nuevaPrimaria == null) && (item.getPrimaria()))
+			{
+				nuevaPrimaria = obtenerCobertura(item.getNroCredencial());
 			}
 		}
 	}
@@ -179,8 +198,13 @@ public class Paciente
 		AdmPersistenciaPacientes.getInstancia().modificar(this);
 		this.coberturas.addAll(nuevos);
 		this.coberturas.removeAll(eliminados);
+		this.coberturas.forEach(c -> c.setPrimaria(false));
+		if (nuevaPrimaria != null)
+			this.nuevaPrimaria.setPrimaria(true);
+		this.coberturas.sort((a,b) -> a.getPrimaria()? -1: 0);
 		this.nuevos = null;
 		this.eliminados = null;
+		this.nuevaPrimaria = null;
 	}
 	
 	public void eliminar() throws Exception
@@ -210,5 +234,9 @@ public class Paciente
 
 	public List<Cobertura> getEliminados() {
 		return eliminados;
+	}
+	
+	public Cobertura getNuevaPrimaria() {
+		return nuevaPrimaria;
 	}
 }

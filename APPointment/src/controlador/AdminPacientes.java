@@ -67,7 +67,7 @@ public class AdminPacientes {
 		pacientes.put(nuevoPaciente.getId(), nuevoPaciente);
 	}
 	
-	public void modificar(int id, String apellido, String nombre, int dni, Date fechaNacimiento, String telefono, String email, boolean activo, List<ItemCoberturaView> coberturas) throws Exception 
+	public void modificar(int id, String apellido, String nombre, Integer dni, Date fechaNacimiento, String telefono, String email, boolean activo, List<ItemCoberturaView> coberturas) throws Exception 
 	{	
 		Paciente paciente = this.buscar(id);
 		if (paciente == null) throw new ExceptionDeNegocio("El paciente especificado no existe: id=" + Integer.toString(id));

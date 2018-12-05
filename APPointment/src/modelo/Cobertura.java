@@ -54,6 +54,10 @@ public class Cobertura
 	public void setActiva(Boolean activa) {
 		this.activa = activa;
 	}
+	
+	public void setPrimaria(Boolean primaria) {
+		this.primaria = primaria;
+	}
 
 	public CoberturaView getView() throws Exception
 	{

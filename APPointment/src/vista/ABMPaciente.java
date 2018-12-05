@@ -148,14 +148,14 @@ public class ABMPaciente extends JDialog {
 			int opcion = JOptionPane.showConfirmDialog(null, "Seguro que queres eliminar el paciente? (se desactivara)", "Eliminar Paciente", JOptionPane.YES_NO_OPTION);
 			if (opcion == JOptionPane.YES_OPTION)
 			{
-				AdminPacientes.getInstancia().eliminar((int)tblPacientes.getValueAt(tblPacientes.getSelectedRow(), 0));
+				AdminPacientes.getInstancia().eliminar(pnlBuscarPaciente.getIDSeleccionado());
 				pnlBuscarPaciente.actualizar();	
 			}
 		} 
 		catch (Exception e) 
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error al actualizar los datos:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Error al eliminar el paciente:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}		
 	}
 	
@@ -163,7 +163,6 @@ public class ABMPaciente extends JDialog {
 	{
 		try
 		{
-			
 			PacienteView paciente = AdminPacientes.getInstancia().obtener(pnlBuscarPaciente.getIDSeleccionado());
 			
 			DatosPaciente formPaciente = new DatosPaciente();

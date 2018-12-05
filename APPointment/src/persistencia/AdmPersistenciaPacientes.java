@@ -12,6 +12,7 @@ import java.util.List;
 
 import controlador.PacienteEncontradoView;
 import modelo.Cobertura;
+import modelo.ExceptionDeNegocio;
 import modelo.Paciente;
 import modelo.Plan;
 
@@ -48,6 +49,8 @@ public class AdmPersistenciaPacientes {
 				pac.setApellido(result.getString(2));
 				pac.setNombre(result.getString(3));
 				pac.setDNI(result.getInt(4));
+				if (result.wasNull())
+					pac.setDNI(null);
 				pac.setTelefono(result.getString(5));
 				pac.setActivo(result.getBoolean(6));
 				lista.add(pac);
@@ -80,7 +83,9 @@ public class AdmPersistenciaPacientes {
 			{
 				String apellido = result.getString(1);
 				String nombre = result.getString(2);
-				int dni = result.getInt(3);
+				Integer dni = result.getInt(3);
+				if (result.wasNull())
+					dni = null;
 				Date fechaNac = result.getDate(4);
 				String telefono = result.getString(5);
 				String email = result.getString(6);
@@ -153,6 +158,12 @@ public class AdmPersistenciaPacientes {
 			}
 			cnx.commit();
 		}
+		catch (SQLException se)
+		{
+			if (cnx != null) cnx.rollback();
+			if (se.getSQLState().startsWith("S0001")) throw new ExceptionDeNegocio("El DNI o el numero de cobertura ya existe.");
+			else throw se;
+		}
 		catch (Exception e)
 		{
 			System.out.println(e.getMessage());
@@ -216,17 +227,16 @@ public class AdmPersistenciaPacientes {
 			{
 				eliminarCobertura(eliminada, cnx);
 			}
+			if (paciente.getNuevaPrimaria() != null)
+				actualizarCoberturaPrimaria(paciente.getId(), paciente.getNuevaPrimaria(), cnx);
 			
-			List<Cobertura> listaFinal = new ArrayList<Cobertura>(paciente.getCoberturas());
-			listaFinal.removeAll(paciente.getEliminados());
-			listaFinal.addAll(paciente.getNuevos());
-			listaFinal.removeIf(c -> !c.getPrimaria());
-			if (listaFinal.size() != 0)
-			{
-				Cobertura nuevaPrimaria = listaFinal.get(0);
-				actualizarCoberturaPrimaria(paciente.getId(), nuevaPrimaria, cnx);
-			}
 			cnx.commit();
+		}
+		catch (SQLException se)
+		{
+			if (cnx != null) cnx.rollback();
+			if (se.getSQLState().startsWith("S0001")) throw new ExceptionDeNegocio("El DNI o el numero de cobertura ya existe.");
+			else throw se;
 		}
 		catch (Exception e)
 		{
@@ -257,7 +267,7 @@ public class AdmPersistenciaPacientes {
 		try
 		{
 			cnx = PoolConexiones.getInstancia().getConnection();
-			PreparedStatement cmdSqlPac = cnx.prepareStatement("UPDATE Paciente SET activo = 0 WHERE ID=?");
+			PreparedStatement cmdSqlPac = cnx.prepareStatement("UPDATE Paciente SET activo=0 WHERE ID=?");
 			cmdSqlPac.setInt(1, paciente.getId());
 			cmdSqlPac.execute();
 		}

@@ -97,7 +97,14 @@ public class BuscarPacientePanel extends JPanel {
 			fila[0] = p.getId();
 			fila[1] = p.getApellido();
 			fila[2] = p.getNombre();
-			fila[3] = p.getDNI();
+			if (p.getDNI() != null)
+			{
+				fila[3] = p.getDNI();
+			}
+			else
+			{
+				fila[3] = ""; 
+			}
 			fila[4] = p.getTelefono();
 			if(soloActivos) {
 				if(p.getActivo()) {
@@ -128,9 +135,13 @@ public class BuscarPacientePanel extends JPanel {
 	{
 		return tblResultados.getValueAt(tblResultados.getSelectedRow(), 2).toString();
 	}
-	public int getDNI()
+	public Integer getDNI()
 	{
-		return Integer.parseInt(tblResultados.getValueAt(tblResultados.getSelectedRow(), 3).toString());
+		String valor = tblResultados.getValueAt(tblResultados.getSelectedRow(), 3).toString();
+		if (valor.trim().isEmpty())
+			return null;
+		else
+			return Integer.parseInt(valor);
 	}
 	public Integer getIDSeleccionado()
 	{

@@ -313,10 +313,10 @@ public class VentanaPrincipal extends JFrame {
 		cargarAgenda();
 	}
 	
-	private CalendarEvent crearEvento(Date fechaHoraInicio, Date fechaHoraFin, String apellido, String nombre, int DNI, int idTurno, int estado)
+	private CalendarEvent crearEvento(Date fechaHoraInicio, Date fechaHoraFin, String apellido, String nombre, Integer DNI, int idTurno, int estado)
 	{
 		String titulo = apellido + ", " + nombre;
-		if (DNI > 0) titulo = titulo + " DNI " + Integer.toString(DNI);
+		if (DNI != null) titulo = titulo + " DNI " + Integer.toString(DNI);
 		LocalDate ldInicio = fechaHoraInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		LocalTime ltInicio = fechaHoraInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
 		LocalTime ltFin = fechaHoraFin.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();

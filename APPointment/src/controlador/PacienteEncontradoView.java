@@ -4,7 +4,7 @@ public class PacienteEncontradoView {
 	private int id;
 	private String apellido;
 	private String nombre;
-	private int DNI;
+	private Integer DNI;
 	private String telefono;
 	private boolean activo;
 	
@@ -26,10 +26,10 @@ public class PacienteEncontradoView {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	public int getDNI() {
+	public Integer getDNI() {
 		return DNI;
 	}
-	public void setDNI(int dNI) {
+	public void setDNI(Integer dNI) {
 		DNI = dNI;
 	}
 	public String getTelefono() {

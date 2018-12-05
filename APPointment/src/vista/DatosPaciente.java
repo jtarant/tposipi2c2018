@@ -265,7 +265,14 @@ public class DatosPaciente extends JDialog {
 		if (icv != null)
 		{
 			this.coberturas.remove(nroCredencial);
+
+			// Si estoy quitando la primara, designo como primaria la primera de la lista
+			if (icv.getPrimaria() && this.coberturas.size() > 1)
+			{
+				this.coberturas.get(table.getValueAt(0, 3).toString()).setPrimaria(true);
+			}
 		}
+		// Si solo queda 1 en la lista, la designo como primaria
 		if (this.coberturas.size() == 1)
 			this.coberturas.get(table.getValueAt(0, 3).toString()).setPrimaria(true);
 		llenarGrilla();
