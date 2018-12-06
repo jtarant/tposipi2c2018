@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import controlador.ItemProfesionalView;
 import controlador.IdNombreView;
 import modelo.Prestacion;
 import modelo.Profesional;
@@ -54,6 +55,33 @@ public class AdmPersistenciaProfesionales {
 		}
 	}
 	
+	public List<ItemProfesionalView> listarProfesionales() throws Exception
+	{
+		Connection cnx = null;
+		List<ItemProfesionalView> lista = new ArrayList<ItemProfesionalView>();
+		try
+		{
+			cnx = PoolConexiones.getInstancia().getConnection();
+			PreparedStatement cmdSql = cnx.prepareStatement("SELECT apellido,nombre,especialidad,Profesional.activo FROM Profesional INNER JOIN Usuario ON Profesional.ID_Usuario=Usuario.ID ORDER BY apellido,nombre");
+			
+			ResultSet result = cmdSql.executeQuery();
+			while (result.next())
+			{
+				lista.add(new ItemProfesionalView(result.getString(1), result.getString(2), result.getString(3), result.getBoolean(4)));
+			}
+			PoolConexiones.getInstancia().realeaseConnection(cnx);
+			return lista;
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw e;
+		}				
+		finally
+		{
+			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
+		}
+	}
 	public Profesional buscar(int id) throws Exception
 	{
 		Connection cnx = null;

@@ -27,6 +27,11 @@ public class AdminProfesionales {
 		return AdmPersistenciaProfesionales.getInstancia().listarPorIdNombre();
 	}
 	
+	public List<ItemProfesionalView> listarProfesionales() throws Exception
+	{
+		return AdmPersistenciaProfesionales.getInstancia().listarProfesionales();
+	}
+	
 	public Profesional buscar(int id) throws Exception
 	{
 		Profesional pro = null;

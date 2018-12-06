@@ -31,6 +31,11 @@ public class AdminObrasSociales
 		return AdmPersistenciaObrasSociales.getInstancia().listarPorIdNombre();
 	}
 	
+	public List<ObraSocialView> listarObrasSociales() throws Exception
+	{
+		return AdmPersistenciaObrasSociales.getInstancia().listarObrasSociales();
+	}
+	
 	public List<IdNombreView> listarPlanesPorIdNombre(int idObraSocial) throws Exception
 	{
 		return AdmPersistenciaObrasSociales.getInstancia().listarPlanesPorIdNombre(idObraSocial);

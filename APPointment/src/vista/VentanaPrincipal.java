@@ -191,11 +191,33 @@ public class VentanaPrincipal extends JFrame {
         JMenu mnProfesionales = new JMenu("Profesionales");
         menuBar.add(mnProfesionales);
         
+        JMenuItem mntmAdministradorDeProfesionales = new JMenuItem("Administrador de Profesionales");
+        mntmAdministradorDeProfesionales.addActionListener(new ActionListener() {
+        	@Override
+			public void actionPerformed(ActionEvent arg0) {
+        		ABMProfesionales formPro = new ABMProfesionales();
+        		formPro.setLocationRelativeTo(null);
+        		formPro.setVisible(true);
+        	}
+        });
+        mnProfesionales.add(mntmAdministradorDeProfesionales);
+        
         JMenu mnUsuarios = new JMenu("Usuarios");
         menuBar.add(mnUsuarios);
         
         JMenu mnObrasSociales = new JMenu("Obras Sociales");
         menuBar.add(mnObrasSociales);
+        
+        JMenuItem mntmAdministradorDeObras = new JMenuItem("Administrador de Obras Sociales");
+        mntmAdministradorDeObras.addActionListener(new ActionListener() {
+        	@Override
+			public void actionPerformed(ActionEvent e) {
+        		ABMObrasSociales formOS = new ABMObrasSociales();
+        		formOS.setLocationRelativeTo(null);
+        		formOS.setVisible(true);
+        	}
+        });
+        mnObrasSociales.add(mntmAdministradorDeObras);
         
         JMenu mnMiPerfil = new JMenu("Mi Perfil");
         menuBar.add(mnMiPerfil);

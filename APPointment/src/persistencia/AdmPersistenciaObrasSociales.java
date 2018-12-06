@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import controlador.IdNombreView;
+import controlador.ObraSocialView;
 import modelo.AlcanceCobertura;
 import modelo.ObraSocial;
 import modelo.Plan;
@@ -88,6 +89,34 @@ public class AdmPersistenciaObrasSociales
 			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
 		}
 	}
+	
+	public List<ObraSocialView> listarObrasSociales() throws Exception
+	{
+		Connection cnx = null;
+		List<ObraSocialView> lista = new ArrayList<ObraSocialView>();
+		try
+		{
+			cnx = PoolConexiones.getInstancia().getConnection();
+			PreparedStatement cmdSql = cnx.prepareStatement("SELECT obrasocial.id,obrasocial.nombre,telefonoPrestadores,direccionFacturacion,email,activo,nomenclador.nombre FROM ObraSocial INNER JOIN Nomenclador ON ObraSocial.ID_Nomenclador=Nomenclador.ID ORDER BY obrasocial.nombre");
+			
+			ResultSet result = cmdSql.executeQuery();
+			while (result.next())
+			{
+				lista.add(new ObraSocialView(result.getInt(1), result.getString(2), result.getString(3), result.getString(4), result.getString(5), result.getBoolean(6), result.getString(7)));
+			}
+			PoolConexiones.getInstancia().realeaseConnection(cnx);
+			return lista;
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+			throw e;
+		}				
+		finally
+		{
+			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
+		}
+	}	
 	
 	public List<IdNombreView> listarPlanesPorIdNombre(int idObraSocial) throws Exception
 	{
