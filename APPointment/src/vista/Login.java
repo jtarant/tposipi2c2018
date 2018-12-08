@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import controlador.AdminUsuarios;
@@ -35,8 +36,9 @@ public class Login extends JDialog {
 			public void run() {
 				try 
 				{	
-					Login frame = new Login();
-					frame.setVisible(true);
+					Login form = new Login();
+					form.setLocationRelativeTo(null);
+					form.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -53,9 +55,10 @@ public class Login extends JDialog {
 	 * Create the dialog.
 	 */
 	public Login() {
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("APPoinment  - Inicio de sesion");
 		setModal(true);
-		setBounds(100, 100, 436, 169);
+		setBounds(100, 100, 476, 187);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -66,16 +69,16 @@ public class Login extends JDialog {
 		contentPanel.add(lblUsuario);
 		
 		txtIdUsuario = new JTextField();
-		txtIdUsuario.setBounds(77, 8, 278, 20);
+		txtIdUsuario.setBounds(107, 8, 278, 20);
 		contentPanel.add(txtIdUsuario);
 		txtIdUsuario.setColumns(10);
 		
-		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(10, 45, 59, 14);
+		JLabel lblPassword = new JLabel("Contrase\u00F1a");
+		lblPassword.setBounds(10, 45, 82, 14);
 		contentPanel.add(lblPassword);
 		
 		pwdPassword = new JPasswordField();
-		pwdPassword.setBounds(77, 42, 278, 20);
+		pwdPassword.setBounds(107, 42, 278, 20);
 		contentPanel.add(pwdPassword);
 		
 		JLabel lblMensajeError = new JLabel("");

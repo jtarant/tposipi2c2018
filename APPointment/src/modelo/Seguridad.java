@@ -16,8 +16,7 @@ public class Seguridad
 	@SuppressWarnings("deprecation")
 	public static String ofuscarPassword(String password)
 	{
-		String passBase64 = Base64.getEncoder().encodeToString(password.getBytes());
-		return URLEncoder.encode(passBase64);
+		return Base64.getEncoder().encodeToString(password.getBytes());
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -30,8 +29,7 @@ public class Seguridad
 	
 	public static String desOfuscarPassword(String passOfuscada)
 	{
-		String passBase64 = URLDecoder.decode(passOfuscada);
-		byte[] bytes = Base64.getDecoder().decode(passBase64);
+		byte[] bytes = Base64.getDecoder().decode(passOfuscada);
 		return new String(bytes);
 	}
 }
