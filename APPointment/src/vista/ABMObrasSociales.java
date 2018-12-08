@@ -28,7 +28,6 @@ public class ABMObrasSociales extends JDialog {
 	private JTable table;
 
 	public ABMObrasSociales() {
-		setVisible(true);
 		setModal(true);
 		setResizable(false);
 		setTitle("Administrador de Obras Sociales");
@@ -37,10 +36,8 @@ public class ABMObrasSociales extends JDialog {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-
 	
 		table = new JTable();
-
 		table.setFillsViewportHeight(true);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setDefaultEditor(Object.class, null);

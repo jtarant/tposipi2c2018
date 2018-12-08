@@ -19,16 +19,11 @@ import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class ABMProfesionales extends JDialog {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTable table;
 
 	public ABMProfesionales() {
-		setVisible(true);
 		setModal(true);
 		setResizable(false);
 		setTitle("Administrador de Profesionales");
@@ -36,11 +31,9 @@ public class ABMProfesionales extends JDialog {
 		setBounds(100, 100, 585, 385);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-
-	
+		setContentPane(contentPane);	
+		
 		table = new JTable();
-	
 		table.setFillsViewportHeight(true);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setDefaultEditor(Object.class, null);

@@ -37,7 +37,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.Timer;
 
 public class VentanaPrincipal extends JFrame {
-
 	private WeekCalendar calendario;
 	private JComboBox<IdNombreView> cboProfesionales;
 	private IdNombreView idNombreProfesional;
@@ -179,6 +178,7 @@ public class VentanaPrincipal extends JFrame {
         		ABMProfesionales formPro = new ABMProfesionales();
         		formPro.setLocationRelativeTo(null);
         		formPro.setVisible(true);
+        		formPro.dispose();
         	}
         });
         mnProfesionales.add(mntmAdministradorDeProfesionales);
@@ -196,6 +196,7 @@ public class VentanaPrincipal extends JFrame {
         		ABMObrasSociales formOS = new ABMObrasSociales();
         		formOS.setLocationRelativeTo(null);
         		formOS.setVisible(true);
+        		formOS.dispose();
         	}
         });
         mnObrasSociales.add(mntmAdministradorDeObras);

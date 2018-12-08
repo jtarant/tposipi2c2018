@@ -46,7 +46,7 @@ public class Login extends JDialog {
 		});
 	}
 
-	public void habilitarRegistracion(Boolean r)
+	public void habilitarRecuperar(Boolean r)
 	{
 		btnRecuperar.setVisible(r);
 	}
@@ -100,7 +100,7 @@ public class Login extends JDialog {
 							if (!AdminUsuarios.getInstancia().autenticar(txtIdUsuario.getText().trim().toLowerCase(), String.valueOf(pwdPassword.getPassword())))
 							{
 								lblMensajeError.setText("Usuario o contraseña no validos.");
-								habilitarRegistracion(true);
+								habilitarRecuperar(true);
 							}
 							else
 							{
@@ -130,8 +130,10 @@ public class Login extends JDialog {
 					{
 						try 
 						{
-							AdminUsuarios.getInstancia().recuperarContrasena(txtIdUsuario.getText().trim().toLowerCase());
-							JOptionPane.showMessageDialog(null, "Se ha generado una nueva contraseña y ha sido enviada a su casilla de email", "APPointment - Recuperacion de contraseña", JOptionPane.INFORMATION_MESSAGE);
+							if (AdminUsuarios.getInstancia().recuperarContrasena(txtIdUsuario.getText().trim().toLowerCase()))
+								JOptionPane.showMessageDialog(null, "Se ha generado una nueva contraseña y ha sido enviada a su casilla de email", "APPointment - Recuperacion de contraseña", JOptionPane.INFORMATION_MESSAGE);
+							else
+								JOptionPane.showMessageDialog(null, "Su email no se encuentra registrado en el sistema.", "APPointment - Recuperacion de contraseña", JOptionPane.WARNING_MESSAGE);								
 						} 
 						catch (Exception e) 
 						{

@@ -60,17 +60,21 @@ public class AdminUsuarios {
 		else return false;
 	}
 	
-	public void recuperarContrasena(String email) throws Exception {
+	public boolean recuperarContrasena(String email) throws Exception {
 		Usuario usuarioNuevaPass = this.buscar(email);
 		EmailRecuperoPassword emailPassword;
 		String nuevaPassword;
-		if(usuarioNuevaPass != null){
+		
+		if (usuarioNuevaPass != null)
+		{
 			nuevaPassword = usuarioNuevaPass.getApellido() + "2018";
 			usuarioNuevaPass.setContrasena(Seguridad.ofuscarPassword(nuevaPassword));
 			AdmPersistenciaUsuarios.getInstancia().modificar(usuarioNuevaPass);
 			
 			emailPassword = new EmailRecuperoPassword(email, usuarioNuevaPass.getApellido(), usuarioNuevaPass.getNombre(), nuevaPassword);
 			NotificadorEmail.getInstancia().enviar(emailPassword);
+			return true;
 		}
+		else return false;
 	}
 }
