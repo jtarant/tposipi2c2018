@@ -129,28 +129,23 @@ public class AdminReglas
 		periodoHasta.setMinutes(59);
 		periodoHasta.setSeconds(59);
 		
-		Boolean yaGenerados = AdminTurnos.getInstancia().existenTurnosGenerados(periodoDesde, periodoHasta, idProfesional);
-		
-		if (!yaGenerados)
+		reglas = obtenerReglas(idProfesional, periodoDesde, periodoHasta);
+		for	(Regla regla : reglas)
 		{
-			reglas = obtenerReglas(idProfesional, periodoDesde, periodoHasta);
-			for	(Regla regla : reglas)
+			fechas = regla.calcularFechas(fecha);
+			for (Date fechaHora : fechas)
 			{
-				fechas = regla.calcularFechas(fecha);
-				for (Date fechaHora : fechas)
+				try
 				{
-					try
-					{
-						AdminTurnos.getInstancia().reservar(regla.getPaciente().getId(), idProfesional, fechaHora, regla.getId());						
-					}
-					catch (Exception exReserva)
-					{
-						ErrorTurnoView error = new ErrorTurnoView();
-						error.setCausa(exReserva.getMessage());
-						error.setFechaHoraInicio(fechaHora);
-						error.setPaciente(new IdNombreView(regla.getPaciente().getId(), regla.getPaciente().getApellido() + ", " + regla.getPaciente().getNombre()));
-						errores.add(error);
-					}
+					AdminTurnos.getInstancia().reservar(regla.getPaciente().getId(), idProfesional, fechaHora, regla.getId());						
+				}
+				catch (Exception exReserva)
+				{
+					ErrorTurnoView error = new ErrorTurnoView();
+					error.setCausa(exReserva.getMessage());
+					error.setFechaHoraInicio(fechaHora);
+					error.setPaciente(new IdNombreView(regla.getPaciente().getId(), regla.getPaciente().getApellido() + ", " + regla.getPaciente().getNombre()));
+					errores.add(error);
 				}
 			}
 		}

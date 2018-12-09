@@ -153,11 +153,6 @@ public class AdminTurnos {
 		}
 	}
 	
-	public Boolean existenTurnosGenerados(Date desde, Date hasta, int idProfesional) throws Exception
-	{
-		return AdmPersistenciaTurnos.getInstancia().existenTurnosGenerados(desde,hasta,idProfesional);
-	}
-	
 	public void generarReporteFacturacion(String archivo, int mes, int anio, int idProfesional, int idObraSocial, Integer idPaciente) throws Exception
 	{
 		Profesional profesional = AdminProfesionales.getInstancia().buscar(idProfesional);

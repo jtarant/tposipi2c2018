@@ -252,32 +252,6 @@ public class AdmPersistenciaTurnos {
 		}
 	}
 
-	public Boolean existenTurnosGenerados(Date desde, Date hasta, int idProfesional) throws Exception 
-	{
-		Connection cnx = null;
-		try
-		{
-			cnx = PoolConexiones.getInstancia().getConnection();
-			PreparedStatement cmdSql = cnx.prepareStatement("SELECT COUNT(ID_ReglaTurnoProgramado) FROM Turno WHERE fechaHoraInicio>=? AND fechaHoraFin<=? AND ID_Profesional=?");
-			cmdSql.setTimestamp(1, new Timestamp(desde.getTime()));
-			cmdSql.setTimestamp(2, new Timestamp(hasta.getTime()));
-			cmdSql.setInt(3, idProfesional);
-			ResultSet result = cmdSql.executeQuery();
-			PoolConexiones.getInstancia().realeaseConnection(cnx);
-			result.next();
-			return (result.getInt(1)!=0);
-		}
-		catch (Exception e)
-		{
-			System.out.println(e.getMessage());
-			throw e;
-		}
-		finally
-		{
-			if (cnx != null) PoolConexiones.getInstancia().realeaseConnection(cnx); 
-		}
-	}
-
 	public void insertarAdmision(Turno turno) throws Exception 
 	{
 		Connection cnx = null;

@@ -121,10 +121,15 @@ public class AdmPersistenciaReglas
 		try
 		{
 			cnx = PoolConexiones.getInstancia().getConnection();
-			PreparedStatement cmdSql = cnx.prepareStatement("SELECT ID FROM ReglaTurnoProgramado WHERE ID_Profesional=? AND fechaInicio<=? AND (FechaFin<=? OR FechaFin IS NULL) ORDER BY ID");
+			StringBuilder sql = new StringBuilder("SELECT ID FROM ReglaTurnoProgramado WHERE ID_Profesional=? AND fechaInicio<=? AND (FechaFin<=? OR FechaFin IS NULL) AND Activa=1 AND ID NOT IN ");  
+			sql.append("(SELECT DISTINCT ID_ReglaTurnoProgramado FROM Turno WHERE ID_ReglaTurnoProgramado IS NOT NULL AND ID_Profesional=? AND fechaHoraInicio>=? AND fechaHoraFin<=?) ORDER BY ID");
+			PreparedStatement cmdSql = cnx.prepareStatement(sql.toString());
 			cmdSql.setInt(1, IdProfesional);
-			cmdSql.setTimestamp(2, new Timestamp(desde.getTime()));
+			cmdSql.setTimestamp(2, new Timestamp(hasta.getTime()));
 			cmdSql.setTimestamp(3, new Timestamp(hasta.getTime()));
+			cmdSql.setInt(4, IdProfesional);
+			cmdSql.setTimestamp(5, new Timestamp(desde.getTime()));
+			cmdSql.setTimestamp(6, new Timestamp(hasta.getTime()));
 			ResultSet result = cmdSql.executeQuery();
 			while (result.next())
 			{
