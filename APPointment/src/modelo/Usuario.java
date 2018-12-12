@@ -53,7 +53,8 @@ public class Usuario {
 	}
 
 	public void setContrasena(String contrasena) {
-		this.contrasena = contrasena;
+		if (contrasena != null)
+			this.contrasena = Seguridad.ofuscarPassword(contrasena);
 	}
 
 	public String getEmail() {

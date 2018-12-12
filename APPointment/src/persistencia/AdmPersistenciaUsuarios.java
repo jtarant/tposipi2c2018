@@ -37,7 +37,7 @@ public class AdmPersistenciaUsuarios {
 				int id = result.getInt(1);
 				String nombre = result.getString(2);
 				String apellido = result.getString(3);
-				String contrasena = Seguridad.desOfuscarPassword(result.getString(4));
+				String contrasena = result.getString(4);
 				String email = result.getString(5);
 				String rol = result.getString(6);
 				Boolean activo = result.getBoolean(7);

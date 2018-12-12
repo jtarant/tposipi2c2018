@@ -46,7 +46,7 @@ public class AdminUsuarios {
 		Usuario usr = this.buscar(email);
 		if (usr != null)
 		{
-			if (usr.getContrasena().equals(password))
+			if (usr.getContrasena().equals(Seguridad.ofuscarPassword(password)))
 			{
 				this.usuarioLogueado = usr;
 				return true;
@@ -68,7 +68,7 @@ public class AdminUsuarios {
 		if (usuarioNuevaPass != null)
 		{
 			nuevaPassword = usuarioNuevaPass.getApellido() + "2018";
-			usuarioNuevaPass.setContrasena(Seguridad.ofuscarPassword(nuevaPassword));
+			usuarioNuevaPass.setContrasena(nuevaPassword);
 			AdmPersistenciaUsuarios.getInstancia().modificar(usuarioNuevaPass);
 			
 			emailPassword = new EmailRecuperoPassword(email, usuarioNuevaPass.getApellido(), usuarioNuevaPass.getNombre(), nuevaPassword);
